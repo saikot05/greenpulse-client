@@ -1,23 +1,21 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Providers from "../providers/Providers";
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Providers from '../providers/Providers';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "GreenPulse AI - Sustainability & ESG Intelligence",
-  description: "Enterprise sustainability analytics, ESG audit tracing, and decarbonization planning.",
+  title: 'GreenPulse AI - Sustainability & ESG Intelligence',
+  description:
+    'Enterprise sustainability analytics, ESG audit tracing, and decarbonization planning powered by Gemini AI.',
+  keywords: ['ESG', 'sustainability', 'carbon audit', 'decarbonization', 'AI'],
 };
 
 export default function RootLayout({
@@ -26,11 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+    /*
+     * suppressHydrationWarning is required by next-themes.
+     * next-themes injects a class attribute on <html> during client hydration
+     * which does not match the server-rendered markup — suppressing the warning
+     * is the officially recommended approach.
+     */
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
         <Providers>
           <Navbar />
           <main className="flex-1 flex flex-col">

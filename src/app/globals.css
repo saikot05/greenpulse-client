@@ -1,27 +1,68 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+/* ─── CSS Custom Properties ─────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0a0a0a;
+  --surface: #f9fafb;
+  --border: #e5e7eb;
+  --muted: #6b7280;
 }
 
+/* next-themes injects .dark on <html> — define dark-mode tokens here */
+.dark {
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  --surface: #18181b;
+  --border: #27272a;
+  --muted: #a1a1aa;
+}
+
+/* ─── Tailwind v4 theme tokens ───────────────────────────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-inter), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base styles ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* ─── Scrollbar styling ──────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #3f3f46;
 }
