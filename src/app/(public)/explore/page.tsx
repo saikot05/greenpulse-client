@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Pagination } from '@heroui/react';
-import type { IEsgAudit } from '../../../types/audit.js';
-import AuditCard from '../../../components/audits/AuditCard.js';
-import AuditSkeleton from '../../../components/audits/AuditSkeleton.js';
-import AuditFilterBar from '../../../components/audits/AuditFilterBar.js';
+import type { IEsgAudit } from '../../../types/audit';
+import AuditCard from '../../../components/audits/AuditCard';
+import AuditSkeleton from '../../../components/audits/AuditSkeleton';
+import AuditFilterBar from '../../../components/audits/AuditFilterBar';
 
 const MOCK_AUDITS: IEsgAudit[] = [
   {
@@ -416,18 +416,51 @@ export default function ExplorePage() {
             </div>
           )}
 
-          {/* Pagination controls */}
+          {/* Pagination controls using HeroUI v3 compound syntax */}
           {!isLoading && pages > 1 && (
             <div className="flex justify-center pt-8">
-              <Pagination
-                total={pages}
-                page={page}
-                onChange={setPage}
-                color="success"
-                size="md"
-                variant="flat"
-                className="font-semibold text-emerald-600 dark:text-emerald-400"
-              />
+              <Pagination size="md">
+                <Pagination.Content className="flex items-center gap-1.5 list-none m-0 p-0">
+                  <Pagination.Previous
+                    isDisabled={page === 1}
+                    onPress={() => setPage(page - 1)}
+                    className={`h-9 px-3 text-xs font-semibold rounded-lg border border-neutral-200 dark:border-neutral-800 flex items-center justify-center ${
+                      page === 1 ? 'opacity-50 cursor-not-allowed text-neutral-400' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800/40 cursor-pointer text-neutral-600 dark:text-neutral-300'
+                    }`}
+                  >
+                    Previous
+                  </Pagination.Previous>
+                  
+                  {Array.from({ length: pages }).map((_, idx) => {
+                    const p = idx + 1;
+                    return (
+                      <Pagination.Item key={p}>
+                        <Pagination.Link
+                          isActive={p === page}
+                          onPress={() => setPage(p)}
+                          className={`h-9 w-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-all ${
+                            p === page
+                              ? 'bg-emerald-600 text-white shadow-sm'
+                              : 'border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800/40 cursor-pointer text-neutral-600 dark:text-neutral-300'
+                          }`}
+                        >
+                          {p}
+                        </Pagination.Link>
+                      </Pagination.Item>
+                    );
+                  })}
+
+                  <Pagination.Next
+                    isDisabled={page === pages}
+                    onPress={() => setPage(page + 1)}
+                    className={`h-9 px-3 text-xs font-semibold rounded-lg border border-neutral-200 dark:border-neutral-800 flex items-center justify-center ${
+                      page === pages ? 'opacity-50 cursor-not-allowed text-neutral-400' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800/40 cursor-pointer text-neutral-600 dark:text-neutral-300'
+                    }`}
+                  >
+                    Next
+                  </Pagination.Next>
+                </Pagination.Content>
+              </Pagination>
             </div>
           )}
         </div>
