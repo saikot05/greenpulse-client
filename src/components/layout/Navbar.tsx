@@ -94,14 +94,13 @@ export default function Navbar() {
             <Globe className="h-5 w-5" />
           </Button>
 
-          <Button
-            as={Link}
+          <Link
             href="/login"
-            className="bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm font-semibold h-9 px-4 flex items-center justify-center gap-1.5 rounded-lg"
+            className="bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm font-semibold h-9 px-4 flex items-center justify-center gap-1.5 rounded-lg text-sm transition-colors duration-200"
           >
             <Person className="h-4 w-4" />
             <span>Login</span>
-          </Button>
+          </Link>
         </div>
       </header>
 
