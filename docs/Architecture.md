@@ -20,3 +20,6 @@ Custom palette for green/grey tone layout themes.
 
 ## State Management
 React context for lightweight notifications state.
+
+## Audits Filters
+Interactive pagination and multi-select filtering.
