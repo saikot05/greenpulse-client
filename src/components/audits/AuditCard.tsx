@@ -69,7 +69,7 @@ export default function AuditCard({ audit }: AuditCardProps) {
             <MapPin className="h-4 w-4 shrink-0" />
             <span>{audit.location}</span>
           </div>
-          <Chip color={getRiskChipColor(audit.riskRating)} variant="flat" size="sm" className="font-semibold">
+          <Chip color={getRiskChipColor(audit.riskRating)} variant="soft" size="sm" className="font-semibold">
             {audit.riskRating}
           </Chip>
         </div>
