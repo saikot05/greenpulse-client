@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Input, Select, SelectItem, Button } from '@heroui/react';
+import { Input, Select, ListBox, Button } from '@heroui/react';
 import { Magnifier, Funnel } from '@gravity-ui/icons';
-import type { FacilityType, RiskRating, ScopeCategory } from '../../types/audit.js';
+import type { FacilityType, RiskRating, ScopeCategory } from '../../types/audit';
 
 interface AuditFilterBarProps {
   search: string;
@@ -18,7 +18,7 @@ interface AuditFilterBarProps {
 }
 
 /**
- * Filter Bar using HeroUI Inputs, Selections, and Gravity UI Icons.
+ * Filter Bar using HeroUI v3 Input, Select, ListBox compound APIs and Gravity UI Icons.
  */
 export default function AuditFilterBar({
   search,
@@ -52,10 +52,6 @@ export default function AuditFilterBar({
     'Scope 3 (Value Chain)',
   ];
 
-  const handleSelectionChange = (key: string, setter: (val: string) => void) => {
-    setter(key);
-  };
-
   return (
     <div className="w-full rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 transition-colors duration-300">
       <div className="flex flex-col gap-4">
@@ -67,9 +63,10 @@ export default function AuditFilterBar({
 
         {/* Input selectors grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
-          {/* Search bar input */}
-          <div className="flex flex-col gap-1">
-            <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Search</span>
+          
+          {/* Keyword Search Input */}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Search Keyword</span>
             <Input
               type="text"
               placeholder="Search title, facility..."
@@ -83,91 +80,123 @@ export default function AuditFilterBar({
             />
           </div>
 
-          {/* Facility Type Selector */}
-          <div className="flex flex-col gap-1">
+          {/* Facility Type Selector (HeroUI v3 Compound API) */}
+          <div className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Facility Type</span>
             <Select
-              placeholder="All Facility Types"
-              variant="bordered"
-              size="md"
-              radius="lg"
               selectedKeys={facilityType ? new Set([facilityType]) : new Set([])}
               onSelectionChange={(keys) => {
                 const val = Array.from(keys)[0] as string;
-                handleSelectionChange(val || '', setFacilityType);
+                setFacilityType(val || '');
               }}
-              className="w-full"
             >
-              {facilityTypes.map((type) => (
-                <SelectItem key={type} textValue={type}>
-                  {type}
-                </SelectItem>
-              ))}
+              <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
+                <Select.Value placeholder="All Facility Types" />
+                <Select.Indicator />
+              </Select.Trigger>
+              <Select.Popover className="border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <ListBox className="p-1 gap-1">
+                  {facilityTypes.map((type) => (
+                    <ListBox.Item
+                      id={type}
+                      key={type}
+                      textValue={type}
+                      className="px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer rounded-md text-sm text-neutral-700 dark:text-neutral-300 flex items-center justify-between"
+                    >
+                      {type}
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  ))}
+                </ListBox>
+              </Select.Popover>
             </Select>
           </div>
 
-          {/* Risk Rating Selector */}
-          <div className="flex flex-col gap-1">
+          {/* Risk Rating Selector (HeroUI v3 Compound API) */}
+          <div className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Risk Rating</span>
             <Select
-              placeholder="All Risk Ratings"
-              variant="bordered"
-              size="md"
-              radius="lg"
               selectedKeys={riskRating ? new Set([riskRating]) : new Set([])}
               onSelectionChange={(keys) => {
                 const val = Array.from(keys)[0] as string;
-                handleSelectionChange(val || '', setRiskRating);
+                setRiskRating(val || '');
               }}
-              className="w-full"
             >
-              {riskRatings.map((rating) => (
-                <SelectItem key={rating} textValue={rating}>
-                  {rating}
-                </SelectItem>
-              ))}
+              <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
+                <Select.Value placeholder="All Risk Ratings" />
+                <Select.Indicator />
+              </Select.Trigger>
+              <Select.Popover className="border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <ListBox className="p-1 gap-1">
+                  {riskRatings.map((rating) => (
+                    <ListBox.Item
+                      id={rating}
+                      key={rating}
+                      textValue={rating}
+                      className="px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer rounded-md text-sm text-neutral-700 dark:text-neutral-300 flex items-center justify-between"
+                    >
+                      {rating}
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  ))}
+                </ListBox>
+              </Select.Popover>
             </Select>
           </div>
 
-          {/* Scope selection and reset actions */}
-          <div className="flex flex-col gap-1">
+          {/* Scope Category Selector + Reset Button (HeroUI v3 Compound API) */}
+          <div className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Scope Category</span>
             <div className="flex gap-2 w-full">
               <Select
-                placeholder="All Scopes"
-                variant="bordered"
-                size="md"
-                radius="lg"
                 selectedKeys={scopeCategory ? new Set([scopeCategory]) : new Set([])}
                 onSelectionChange={(keys) => {
                   const val = Array.from(keys)[0] as string;
-                  handleSelectionChange(val || '', setScopeCategory);
+                  setScopeCategory(val || '');
                 }}
                 className="flex-1"
               >
-                {scopeCategories.map((scope) => (
-                  <SelectItem key={scope} textValue={scope}>
-                    {scope}
-                  </SelectItem>
-                ))}
+                <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
+                  <Select.Value placeholder="All Scopes" />
+                  <Select.Indicator />
+                </Select.Trigger>
+                <Select.Popover className="border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  <ListBox className="p-1 gap-1">
+                    {scopeCategories.map((scope) => (
+                      <ListBox.Item
+                        id={scope}
+                        key={scope}
+                        textValue={scope}
+                        className="px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer rounded-md text-sm text-neutral-700 dark:text-neutral-300 flex items-center justify-between"
+                      >
+                        {scope}
+                        <ListBox.ItemIndicator />
+                      </ListBox.Item>
+                    ))}
+                  </ListBox>
+                </Select.Popover>
               </Select>
 
+              {/* Reset Filter Button */}
               <Button
                 isIconOnly
-                color="default"
                 variant="flat"
-                size="md"
                 radius="lg"
-                onClick={onReset}
+                onClick={handleResetLocal}
                 aria-label="Reset Filters"
-                className="h-10 w-10 text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-100 animate-none"
+                className="h-10 w-10 min-w-0 text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-100"
               >
                 <Funnel className="h-4 w-4" />
               </Button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
   );
+
+  function handleResetLocal() {
+    onReset();
+  }
 }
