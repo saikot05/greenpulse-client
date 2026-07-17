@@ -35,3 +35,6 @@ Admins maintain tenant facility configuration.
 
 ## Error Handling & Boundaries
 React Error boundaries capture render failures.
+
+## Loading Skeletons
+Shimmering skeletons for data list views.
