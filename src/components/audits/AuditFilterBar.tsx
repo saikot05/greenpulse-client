@@ -84,11 +84,8 @@ export default function AuditFilterBar({
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Facility Type</span>
             <Select
-              selectedKeys={facilityType ? new Set([facilityType]) : new Set([])}
-              onSelectionChange={(keys) => {
-                const val = Array.from(keys)[0] as string;
-                setFacilityType(val || '');
-              }}
+              selectedKey={facilityType || null}
+              onSelectionChange={(key) => setFacilityType((key as string) || '')}
             >
               <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
                 <Select.Value placeholder="All Facility Types" />
@@ -116,11 +113,8 @@ export default function AuditFilterBar({
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Risk Rating</span>
             <Select
-              selectedKeys={riskRating ? new Set([riskRating]) : new Set([])}
-              onSelectionChange={(keys) => {
-                const val = Array.from(keys)[0] as string;
-                setRiskRating(val || '');
-              }}
+              selectedKey={riskRating || null}
+              onSelectionChange={(key) => setRiskRating((key as string) || '')}
             >
               <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
                 <Select.Value placeholder="All Risk Ratings" />
@@ -149,11 +143,8 @@ export default function AuditFilterBar({
             <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Scope Category</span>
             <div className="flex gap-2 w-full">
               <Select
-                selectedKeys={scopeCategory ? new Set([scopeCategory]) : new Set([])}
-                onSelectionChange={(keys) => {
-                  const val = Array.from(keys)[0] as string;
-                  setScopeCategory(val || '');
-                }}
+                selectedKey={scopeCategory || null}
+                onSelectionChange={(key) => setScopeCategory((key as string) || '')}
                 className="flex-1"
               >
                 <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
