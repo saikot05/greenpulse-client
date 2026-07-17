@@ -67,15 +67,17 @@ export default function AuditFilterBar({
           {/* Keyword Search Input */}
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">Search Keyword</span>
-            <Input
-              type="text"
-              placeholder="Search title, facility..."
-              value={search}
-              onValueChange={setSearch}
-              variant="secondary"
-              startContent={<Magnifier className="h-4 w-4 text-neutral-400 shrink-0" />}
-              className="w-full"
-            />
+            <div className="relative flex items-center w-full">
+              <Magnifier className="absolute left-3 h-4 w-4 text-neutral-400 pointer-events-none z-10" />
+              <Input
+                type="text"
+                placeholder="Search title, facility..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                variant="secondary"
+                className="pl-9 w-full h-10"
+              />
+            </div>
           </div>
 
           {/* Facility Type Selector (HeroUI v3 Compound API) */}
