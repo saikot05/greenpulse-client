@@ -17,3 +17,6 @@ Assistant panel using Server-Sent Events or WebSockets.
 
 ## CSS Styling and Tailwind
 Custom palette for green/grey tone layout themes.
+
+## State Management
+React context for lightweight notifications state.
