@@ -76,6 +76,7 @@ export default function AuditFilterBar({
                 onChange={(e) => setSearch(e.target.value)}
                 variant="secondary"
                 className="pl-9 w-full h-10"
+                aria-label="Search Keyword"
               />
             </div>
           </div>
@@ -87,6 +88,7 @@ export default function AuditFilterBar({
               placeholder="All Facility Types"
               selectedKey={facilityType || null}
               onSelectionChange={(key) => setFacilityType((key as string) || '')}
+              aria-label="Filter by Facility Type"
             >
               <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
                 <Select.Value />
@@ -117,6 +119,7 @@ export default function AuditFilterBar({
               placeholder="All Risk Ratings"
               selectedKey={riskRating || null}
               onSelectionChange={(key) => setRiskRating((key as string) || '')}
+              aria-label="Filter by Risk Rating"
             >
               <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
                 <Select.Value />
@@ -149,6 +152,7 @@ export default function AuditFilterBar({
                 selectedKey={scopeCategory || null}
                 onSelectionChange={(key) => setScopeCategory((key as string) || '')}
                 className="flex-1"
+                aria-label="Filter by Scope Category"
               >
                 <Select.Trigger className="w-full h-10 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 rounded-lg px-3 flex items-center justify-between text-left text-sm text-neutral-800 dark:text-neutral-200">
                   <Select.Value />

@@ -102,6 +102,11 @@ export default function AddAuditPage() {
   const router = useRouter();
   const { data: session, isPending: isSessionLoading } = useSession();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // OCR state management
   const [ocrFile, setOcrFile] = useState<File | null>(null);
   const [ocrProgress, setOcrProgress] = useState(0);
@@ -236,7 +241,7 @@ export default function AddAuditPage() {
     createAuditMutation.mutate(payload);
   };
 
-  if (isSessionLoading) {
+  if (!mounted || isSessionLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[60vh] gap-3">
         <Spinner size="lg" />
@@ -335,7 +340,7 @@ export default function AddAuditPage() {
             <div className="sm:col-span-2">
               <TextField isInvalid={!!errors.title}>
                 <Label>Audit Title</Label>
-                <Input placeholder="e.g. Q3 Electricity Carbon Audit" {...register('title')} />
+                <Input placeholder="e.g. Q3 Electricity Carbon Audit" {...register('title')} aria-label="Audit Title" />
                 {errors.title && <FieldError>{errors.title.message}</FieldError>}
               </TextField>
             </div>
@@ -344,7 +349,7 @@ export default function AddAuditPage() {
             <div>
               <TextField isInvalid={!!errors.facilityName}>
                 <Label>Facility Name</Label>
-                <Input placeholder="e.g. Austin DC-2" {...register('facilityName')} />
+                <Input placeholder="e.g. Austin DC-2" {...register('facilityName')} aria-label="Facility Name" />
                 {errors.facilityName && <FieldError>{errors.facilityName.message}</FieldError>}
               </TextField>
             </div>
@@ -359,6 +364,7 @@ export default function AddAuditPage() {
                 onSelectionChange={(key) => {
                   setValue('facilityType', String(key ?? ''), { shouldValidate: true });
                 }}
+                aria-label="Facility Type"
               >
                 <Select.Trigger className="w-full flex items-center justify-between border border-neutral-200 dark:border-neutral-800 rounded-xl px-3 py-2 bg-neutral-50 dark:bg-neutral-900/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
                   <Select.Value />
@@ -393,7 +399,7 @@ export default function AddAuditPage() {
             <div>
               <TextField isInvalid={!!errors.location}>
                 <Label>Location</Label>
-                <Input placeholder="e.g. Austin, TX" {...register('location')} />
+                <Input placeholder="e.g. Austin, TX" {...register('location')} aria-label="Location" />
                 {errors.location && <FieldError>{errors.location.message}</FieldError>}
               </TextField>
             </div>
@@ -402,7 +408,7 @@ export default function AddAuditPage() {
             <div>
               <TextField isInvalid={!!errors.auditYear}>
                 <Label>Audit Year</Label>
-                <Input type="number" placeholder="e.g. 2026" {...register('auditYear')} />
+                <Input type="number" placeholder="e.g. 2026" {...register('auditYear')} aria-label="Audit Year" />
                 {errors.auditYear && <FieldError>{errors.auditYear.message}</FieldError>}
               </TextField>
             </div>
@@ -417,6 +423,7 @@ export default function AddAuditPage() {
                 onSelectionChange={(key) => {
                   setValue('scopeCategory', String(key ?? ''), { shouldValidate: true });
                 }}
+                aria-label="Scope Category"
               >
                 <Select.Trigger className="w-full flex items-center justify-between border border-neutral-200 dark:border-neutral-800 rounded-xl px-3 py-2 bg-neutral-50 dark:bg-neutral-900/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
                   <Select.Value />
@@ -451,6 +458,7 @@ export default function AddAuditPage() {
                 onSelectionChange={(key) => {
                   setValue('riskRating', String(key ?? ''), { shouldValidate: true });
                 }}
+                aria-label="Risk Rating"
               >
                 <Select.Trigger className="w-full flex items-center justify-between border border-neutral-200 dark:border-neutral-800 rounded-xl px-3 py-2 bg-neutral-50 dark:bg-neutral-900/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
                   <Select.Value />
@@ -482,7 +490,7 @@ export default function AddAuditPage() {
             <div>
               <TextField isInvalid={!!errors.energyUsageKwh}>
                 <Label>Energy Usage (kWh)</Label>
-                <Input type="number" placeholder="e.g. 4500" {...register('energyUsageKwh')} />
+                <Input type="number" placeholder="e.g. 4500" {...register('energyUsageKwh')} aria-label="Energy Usage (kWh)" />
                 {errors.energyUsageKwh && <FieldError>{errors.energyUsageKwh.message}</FieldError>}
               </TextField>
             </div>
@@ -491,7 +499,7 @@ export default function AddAuditPage() {
             <div>
               <TextField isInvalid={!!errors.carbonScoreTons}>
                 <Label>Carbon Score (Tons)</Label>
-                <Input type="number" step="0.01" placeholder="e.g. 1.25" {...register('carbonScoreTons')} />
+                <Input type="number" step="0.01" placeholder="e.g. 1.25" {...register('carbonScoreTons')} aria-label="Carbon Score (Tons)" />
                 {errors.carbonScoreTons && <FieldError>{errors.carbonScoreTons.message}</FieldError>}
               </TextField>
             </div>
@@ -500,7 +508,7 @@ export default function AddAuditPage() {
             <div className="sm:col-span-2">
               <TextField isInvalid={!!errors.shortDescription}>
                 <Label>Short Description</Label>
-                <Input placeholder="Provide a quick summary of the audit findings (min 10 characters)" {...register('shortDescription')} />
+                <Input placeholder="Provide a quick summary of the audit findings (min 10 characters)" {...register('shortDescription')} aria-label="Short Description" />
                 {errors.shortDescription && <FieldError>{errors.shortDescription.message}</FieldError>}
               </TextField>
             </div>
@@ -509,7 +517,7 @@ export default function AddAuditPage() {
             <div className="sm:col-span-2">
               <TextField isInvalid={!!errors.fullOverview}>
                 <Label>Full Overview</Label>
-                <TextArea placeholder="Provide a detailed breakdown of carbon output tracing... (min 20 characters)" {...register('fullOverview')} rows={4} />
+                <TextArea placeholder="Provide a detailed breakdown of carbon output tracing... (min 20 characters)" {...register('fullOverview')} rows={4} aria-label="Full Overview" />
                 {errors.fullOverview && <FieldError>{errors.fullOverview.message}</FieldError>}
               </TextField>
             </div>
@@ -518,7 +526,7 @@ export default function AddAuditPage() {
             <div className="sm:col-span-2">
               <TextField isInvalid={!!errors.imageUrl}>
                 <Label>Optional Image URL</Label>
-                <Input placeholder="https://example.com/facility.jpg" {...register('imageUrl')} />
+                <Input placeholder="https://example.com/facility.jpg" {...register('imageUrl')} aria-label="Optional Image URL" />
                 {errors.imageUrl && <FieldError>{errors.imageUrl.message}</FieldError>}
               </TextField>
             </div>
