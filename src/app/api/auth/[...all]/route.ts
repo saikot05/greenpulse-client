@@ -1,9 +1,16 @@
-import { toNextJsHandler } from 'better-auth/next-js';
-import { auth } from '@/lib/auth';
-
 /**
- * Catch-all API route for Better Auth.
- * Handles all authentication endpoints under /api/auth/*
- * e.g. /api/auth/sign-in, /api/auth/sign-up, /api/auth/callback/google, etc.
+ * Catch-all Next.js App Router handler for Better Auth.
+ * Docs: https://www.better-auth.com/docs/installation#mount-handler
+ *
+ * Handles every request under /api/auth/* including:
+ *   POST /api/auth/sign-in/email
+ *   POST /api/auth/sign-up/email
+ *   GET  /api/auth/callback/google
+ *   GET  /api/auth/get-session
+ *   POST /api/auth/sign-out
+ *   ...and all other Better Auth endpoints
  */
+import { auth } from '@/lib/auth';
+import { toNextJsHandler } from 'better-auth/next-js';
+
 export const { GET, POST } = toNextJsHandler(auth);
