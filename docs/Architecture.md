@@ -38,3 +38,6 @@ React Error boundaries capture render failures.
 
 ## Loading Skeletons
 Shimmering skeletons for data list views.
+
+## Debounce Controls
+Debounced query handling.
