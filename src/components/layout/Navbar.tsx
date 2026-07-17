@@ -90,16 +90,14 @@ export default function Navbar() {
 
         {/* Right side access triggers */}
         <div className="flex items-center gap-3">
-          <Button isIconOnly variant="light" aria-label="Language options" className="text-neutral-500 dark:text-neutral-400 min-w-0 h-9 w-9">
+          <Button isIconOnly aria-label="Language options" className="text-neutral-500 dark:text-neutral-400 min-w-0 h-9 w-9 bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800">
             <Globe className="h-5 w-5" />
           </Button>
 
           <Button
             as={Link}
             href="/login"
-            color="success"
-            variant="solid"
-            className="bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm font-semibold h-9"
+            className="bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm font-semibold h-9 px-4 flex items-center justify-center rounded-lg"
             startContent={<Person className="h-4 w-4" />}
           >
             Login
