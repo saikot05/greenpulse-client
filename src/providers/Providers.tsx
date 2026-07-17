@@ -8,9 +8,9 @@ import ThemeProvider from './ThemeProvider';
  * Root Providers Wrapper.
  *
  * Order matters:
- *   ThemeProvider  (outermost — controls HTML class attribute)
- *   └─ QueryClientProvider  (TanStack Query caching layer)
- *       └─ {children}
+ *   ThemeProvider  (outermost - controls HTML class attribute)
+ *   +- QueryClientProvider  (TanStack Query caching layer)
+ *       +- {children}
  *
  * Note: HeroUI v3 is CSS-first and does not require a global HeroUIProvider.
  */
