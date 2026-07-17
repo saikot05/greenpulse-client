@@ -44,3 +44,6 @@ Debounced query handling.
 
 ## Layout Responsiveness
 Flexbox grids resizing down to single column mobile.
+
+## API Services
+Axios/Fetch services targeting Express /api/v1.
