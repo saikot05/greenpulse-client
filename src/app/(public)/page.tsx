@@ -491,7 +491,10 @@ export default function SaaSLandingPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800/60">
-                  <Avatar src={t.avatar} className="h-9 w-9" />
+                  <Avatar className="h-9 w-9">
+                    <Avatar.Image src={t.avatar} className="object-cover" />
+                    <Avatar.Fallback>{t.name[0]}</Avatar.Fallback>
+                  </Avatar>
                   <div className="min-w-0">
                     <span className="block text-xs font-bold text-neutral-900 dark:text-white truncate">{t.name}</span>
                     <span className="block text-[10px] text-neutral-400 truncate">{t.role}</span>
