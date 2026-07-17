@@ -1,6 +1,17 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 /**
+ * Reads the Better Auth session token directly from client cookies.
+ * This is used to append to the Authorization header, ensuring authentication works
+ * reliably across cross-origin port boundaries (e.g. port 3000 to port 5000).
+ */
+function getSessionToken(): string {
+  if (typeof document === 'undefined') return '';
+  const match = document.cookie.match(/(?:^|; )(?:__Secure-)?better-auth\.session_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : '';
+}
+
+/**
  * Enterprise Fetch API Wrapper.
  * Integrates error serialization, credentials inclusion, and automatic header adjustments.
  */
@@ -16,10 +27,12 @@ export const apiClient = {
       });
     }
 
+    const token = getSessionToken();
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       },
       // Essential: send session cookies cross-origin (e.g. port 3000 to port 5000)
       credentials: 'include',
@@ -41,10 +54,12 @@ export const apiClient = {
   },
 
   async post<T>(path: string, body: unknown): Promise<T> {
+    const token = getSessionToken();
     const response = await fetch(`${BASE_URL}${path}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(body),
       // Essential: send session cookies cross-origin (e.g. port 3000 to port 5000)
@@ -67,10 +82,14 @@ export const apiClient = {
   },
 
   async postFormData<T>(path: string, formData: FormData): Promise<T> {
+    const token = getSessionToken();
     const response = await fetch(`${BASE_URL}${path}`, {
       method: 'POST',
       // Let the browser set the boundary headers automatically
       body: formData,
+      headers: {
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      },
       // Essential: send session cookies cross-origin (e.g. port 3000 to port 5000)
       credentials: 'include',
     });
