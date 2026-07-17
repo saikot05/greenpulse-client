@@ -104,10 +104,10 @@ export default function AuditCard({ audit }: AuditCardProps) {
       <Card.Footer className="px-5 pb-5 pt-2">
         <Button
           variant="secondary"
-          className="w-full text-xs font-semibold border border-neutral-200 dark:border-neutral-800 dark:hover:bg-neutral-800/40 text-neutral-700 dark:text-neutral-300"
-          endContent={<ArrowRight className="h-4 w-4" />}
+          className="w-full text-xs font-semibold border border-neutral-200 dark:border-neutral-800 dark:hover:bg-neutral-800/40 text-neutral-700 dark:text-neutral-300 flex items-center justify-center gap-1.5"
         >
-          View Details
+          <span>View Details</span>
+          <ArrowRight className="h-4 w-4" />
         </Button>
       </Card.Footer>
     </Card>
