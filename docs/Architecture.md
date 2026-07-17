@@ -14,3 +14,6 @@ Drag-drop area to upload CSV/JSON carbon records.
 
 ## AI Chatbot Integration
 Assistant panel using Server-Sent Events or WebSockets.
+
+## CSS Styling and Tailwind
+Custom palette for green/grey tone layout themes.
