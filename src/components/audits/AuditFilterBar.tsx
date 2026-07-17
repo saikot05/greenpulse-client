@@ -73,8 +73,6 @@ export default function AuditFilterBar({
               value={search}
               onValueChange={setSearch}
               variant="secondary"
-              size="md"
-              radius="lg"
               startContent={<Magnifier className="h-4 w-4 text-neutral-400 shrink-0" />}
               className="w-full"
             />
