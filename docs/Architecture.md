@@ -11,3 +11,6 @@ Facility managers inspect audits on grid dashboards.
 
 ## Carbon Analysis Panel
 Drag-drop area to upload CSV/JSON carbon records.
+
+## AI Chatbot Integration
+Assistant panel using Server-Sent Events or WebSockets.
