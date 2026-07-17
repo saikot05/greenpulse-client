@@ -32,3 +32,6 @@ Auditors have read-write access to audits.
 
 ## Administrator Role Access
 Admins maintain tenant facility configuration.
+
+## Error Handling & Boundaries
+React Error boundaries capture render failures.
