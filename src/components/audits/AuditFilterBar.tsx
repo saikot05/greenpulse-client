@@ -174,11 +174,10 @@ export default function AuditFilterBar({
               {/* Reset Filter Button */}
               <Button
                 isIconOnly
-                variant="flat"
-                radius="lg"
-                onClick={handleResetLocal}
+                variant="secondary"
+                onPress={handleResetLocal}
                 aria-label="Reset Filters"
-                className="h-10 w-10 min-w-0 text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-100"
+                className="h-10 w-10 min-w-0 text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-100 rounded-lg"
               >
                 <Funnel className="h-4 w-4" />
               </Button>
