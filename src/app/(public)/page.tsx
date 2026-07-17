@@ -2,17 +2,16 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Accordion, Card, Button, Input, Chip, Avatar, Badge } from '@heroui/react';
+import { Accordion, Card, Button, Input, Chip, Avatar } from '@heroui/react';
 import {
   ShieldCheck,
-  Zap,
+  Thunderbolt,
   ArrowRight,
-  Tree,
+  CircleTree,
   ChartColumn,
   FileText,
   Globe,
   CircleCheck,
-  Magnifier,
   ChevronDown
 } from '@gravity-ui/icons';
 
@@ -81,12 +80,12 @@ const CAPABILITIES = [
   {
     title: 'Context-Aware AI Copilot',
     description: 'Interact conversationally with your green ledgers. Extract summaries, compile stats, and plan savings.',
-    icon: <Zap className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+    icon: <Thunderbolt className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
   },
   {
     title: 'Audit Trail & Compliance',
     description: 'Export signed, traceable PDF reports aligned directly with GHG Protocol, CSRD, and TCFD guidelines.',
-    icon: <Tree className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+    icon: <CircleTree className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
   },
   {
     title: 'Real-Time Anomaly Alerts',
@@ -198,7 +197,7 @@ export default function SaaSLandingPage() {
 
           {/* Floating KPI Banner */}
           <div className="max-w-4xl mx-auto p-0.5 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 dark:from-emerald-900/30 dark:to-teal-900/30 shadow-xl">
-            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200/50 dark:divide-neutral-800 bg-white dark:bg-neutral-900/90 rounded-2xl py-6 px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-neutral-200/50 dark:divide-neutral-800 bg-white dark:bg-neutral-900/95 rounded-2xl py-6 px-4">
               <div className="py-4 sm:py-2">
                 <span className="block text-3xl font-extrabold text-neutral-900 dark:text-white">1.2M+</span>
                 <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mt-1 block">Tons CO₂e Audited</span>
@@ -231,7 +230,7 @@ export default function SaaSLandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {CAPABILITIES.map((cap, idx) => (
-              <Card key={idx} className="p-6 border border-neutral-100 dark:border-neutral-800/60 bg-white/50 dark:bg-neutral-900/60 shadow-sm hover:shadow-md transition-all duration-200">
+              <Card key={idx} className="p-6 border border-neutral-100 dark:border-neutral-800/60 bg-white/50 dark:bg-neutral-950/40 shadow-sm hover:shadow-md transition-all duration-200">
                 <div className="h-12 w-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center mb-6">
                   {cap.icon}
                 </div>
@@ -275,7 +274,7 @@ export default function SaaSLandingPage() {
               </div>
               <h3 className="text-sm font-bold text-neutral-900 dark:text-white mt-4 mb-2">Agentic Audit</h3>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-[200px] leading-relaxed">
-                Gemini agents automatically classify Scope 1-3 telemetry values.
+                Gemini agents automatically classify Scope 1-3 carbon telemetry values.
               </p>
             </div>
 
@@ -321,7 +320,7 @@ export default function SaaSLandingPage() {
               <div className="space-y-3">
                 <button
                   onClick={() => setActiveFacilityTab('dallas')}
-                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between ${
+                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
                     activeFacilityTab === 'dallas'
                       ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-200'
                       : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/40'
@@ -332,7 +331,7 @@ export default function SaaSLandingPage() {
                 </button>
                 <button
                   onClick={() => setActiveFacilityTab('munich')}
-                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between ${
+                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
                     activeFacilityTab === 'munich'
                       ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-200'
                       : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/40'
@@ -343,7 +342,7 @@ export default function SaaSLandingPage() {
                 </button>
                 <button
                   onClick={() => setActiveFacilityTab('seattle')}
-                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between ${
+                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
                     activeFacilityTab === 'seattle'
                       ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-200'
                       : 'border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/40'
@@ -481,7 +480,7 @@ export default function SaaSLandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((t, idx) => (
-              <Card key={idx} className="p-6 border border-neutral-100 dark:border-neutral-800/60 bg-white/50 dark:bg-neutral-900/60 shadow-sm flex flex-col justify-between">
+              <Card key={idx} className="p-6 border border-neutral-100 dark:border-neutral-800/60 bg-white/50 dark:bg-neutral-950/40 shadow-sm flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-0.5 text-amber-500 mb-4">
                     {Array.from({ length: t.stars }).map((_, i) => (
