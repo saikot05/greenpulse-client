@@ -178,14 +178,13 @@ export default function SaaSLandingPage() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <Button
-              as={Link}
+            <Link
               href="/explore"
-              className="w-full sm:w-auto h-11 px-6 font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto h-11 px-6 font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-colors flex items-center justify-center gap-2 cursor-pointer text-sm"
             >
               <span>Explore Public Audits</span>
               <ArrowRight className="h-4 w-4" />
-            </Button>
+            </Link>
             <Button
               variant="secondary"
               onPress={() => setShowDemoModal(true)}
