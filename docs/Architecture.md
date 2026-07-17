@@ -26,3 +26,6 @@ Interactive pagination and multi-select filtering.
 
 ## Notifications
 Badge system representing system updates.
+
+## Auditor Role Access
+Auditors have read-write access to audits.
