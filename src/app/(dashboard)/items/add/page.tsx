@@ -112,6 +112,7 @@ export default function AddAuditPage() {
   const [ocrProgress, setOcrProgress] = useState(0);
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [ocrSuccess, setOcrSuccess] = useState(false);
+  const [toastMsg, setToastMsg] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
 
   // Form initialization
   const {
@@ -187,6 +188,11 @@ export default function AddAuditPage() {
     onError: (err) => {
       setOcrError(err.message || 'Failed to analyze invoice data.');
       setOcrProgress(0);
+      setToastMsg({
+        type: 'error',
+        text: 'Gemini rate limit exceeded. Please wait 10-15 seconds and retry, or enter values manually.',
+      });
+      setTimeout(() => setToastMsg(null), 8000);
     },
     onSettled: (_data, _error, _variables, context) => {
       if (context?.interval) {
@@ -553,6 +559,22 @@ export default function AddAuditPage() {
           </Button>
         </div>
       </form>
+
+      {/* Floating Warning Toast */}
+      {toastMsg && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3.5 rounded-xl border border-red-500 bg-red-50 dark:bg-red-950/90 text-red-800 dark:text-red-300 shadow-2xl animate-fade-in transition-all duration-300">
+          <WarningIcon className="h-5 w-5 shrink-0" />
+          <span className="text-sm font-semibold">{toastMsg.text}</span>
+          <button 
+            type="button"
+            onClick={() => setToastMsg(null)} 
+            className="ml-2 text-red-500 hover:text-red-700 dark:hover:text-red-200 transition-colors font-bold text-sm"
+            aria-label="Close Toast"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 }
