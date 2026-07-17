@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+/* Enable class-based dark mode in Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ─── CSS Custom Properties ─────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
