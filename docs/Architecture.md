@@ -47,3 +47,6 @@ Flexbox grids resizing down to single column mobile.
 
 ## API Services
 Axios/Fetch services targeting Express /api/v1.
+
+## SEO & Metadata
+Next.js metadata configurations on layout head.
