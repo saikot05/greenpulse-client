@@ -41,3 +41,6 @@ Shimmering skeletons for data list views.
 
 ## Debounce Controls
 Debounced query handling.
+
+## Layout Responsiveness
+Flexbox grids resizing down to single column mobile.
