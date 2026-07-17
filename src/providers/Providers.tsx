@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { HeroUIProvider } from '@heroui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 /**
  * Root Providers Wrapper.
- * Combines TanStack Query (QueryClientProvider) and HeroUI (HeroUIProvider)
- * to provide database query caching and semantic layout controls.
+ * Configures the TanStack Query (QueryClientProvider) instance.
+ * Note: HeroUI v3 Web is CSS-first and does not require a global provider at the root level.
  */
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -25,9 +24,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <HeroUIProvider>
-        {children}
-      </HeroUIProvider>
+      {children}
     </QueryClientProvider>
   );
 }
