@@ -23,3 +23,6 @@ React context for lightweight notifications state.
 
 ## Audits Filters
 Interactive pagination and multi-select filtering.
+
+## Notifications
+Badge system representing system updates.
