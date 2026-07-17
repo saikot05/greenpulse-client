@@ -229,7 +229,7 @@ export default function Navbar() {
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
-              <li key={link.href}>
+              <li key={link.label}>
                 <Link
                   href={link.href}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 ${
@@ -286,7 +286,7 @@ export default function Navbar() {
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     onClick={() => setIsMenuOpen(false)}
