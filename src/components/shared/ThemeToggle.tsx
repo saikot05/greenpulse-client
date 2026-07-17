@@ -47,7 +47,7 @@ export default function ThemeToggle() {
     <Button
       isIconOnly
       onPress={cycleTheme}
-      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode (current: ${theme ?? 'system'})`}
+      aria-label="Toggle Theme"
       className="h-9 w-9 bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200 rounded-lg"
     >
       {isDark ? (

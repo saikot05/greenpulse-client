@@ -30,7 +30,7 @@ export default function RootLayout({
      * which does not match the server-rendered markup — suppressing the warning
      * is the officially recommended approach.
      */
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={inter.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
         <Providers>
           <Navbar />

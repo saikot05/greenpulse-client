@@ -25,9 +25,9 @@ const PUBLIC_LINKS = [
 const AUTH_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Explore Audits', href: '/explore' },
-  { label: 'Add Audit', href: '/audits/new' },
-  { label: 'Manage Audits', href: '/audits' },
-  { label: 'Analytics', href: '/analytics' },
+  { label: 'Add Audit', href: '/items/add' },
+  { label: 'Manage Audits', href: '/items/manage' },
+  { label: 'Analytics', href: '/explore' },
 ];
 
 /* --- User avatar helpers -------------------------------------------------- */
@@ -94,6 +94,7 @@ function UserDropdown({
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         aria-haspopup="true"
+        aria-label="User Menu"
         className="flex items-center gap-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
       >
         {image ? (
@@ -129,13 +130,13 @@ function UserDropdown({
 
           {/* Menu items */}
           <div className="py-1.5">
-            <DropdownLink href="/profile" icon={<Person className="h-4 w-4" />} onClick={() => setOpen(false)}>
+            <DropdownLink href="/items/manage" icon={<Person className="h-4 w-4" />} onClick={() => setOpen(false)}>
               Profile
             </DropdownLink>
-            <DropdownLink href="/dashboard" icon={<ChartColumn className="h-4 w-4" />} onClick={() => setOpen(false)}>
+            <DropdownLink href="/items/manage" icon={<ChartColumn className="h-4 w-4" />} onClick={() => setOpen(false)}>
               Dashboard
             </DropdownLink>
-            <DropdownLink href="/settings" icon={<Gear className="h-4 w-4" />} onClick={() => setOpen(false)}>
+            <DropdownLink href="/items/manage" icon={<Gear className="h-4 w-4" />} onClick={() => setOpen(false)}>
               Settings
             </DropdownLink>
           </div>
