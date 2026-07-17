@@ -2,7 +2,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v
 
 /**
  * Enterprise Fetch API Wrapper.
- * Integrates error serialization and automatic header adjustments.
+ * Integrates error serialization, credentials inclusion, and automatic header adjustments.
  */
 export const apiClient = {
   async get<T>(path: string, params?: Record<string, string | number | undefined>): Promise<T> {
@@ -21,6 +21,8 @@ export const apiClient = {
       headers: {
         'Content-Type': 'application/json',
       },
+      // Essential: send session cookies cross-origin (e.g. port 3000 to port 5000)
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -45,6 +47,8 @@ export const apiClient = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
+      // Essential: send session cookies cross-origin (e.g. port 3000 to port 5000)
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -61,5 +65,80 @@ export const apiClient = {
 
     return response.json() as Promise<T>;
   },
+
+  async postFormData<T>(path: string, formData: FormData): Promise<T> {
+    const response = await fetch(`${BASE_URL}${path}`, {
+      method: 'POST',
+      // Let the browser set the boundary headers automatically
+      body: formData,
+      // Essential: send session cookies cross-origin (e.g. port 3000 to port 5000)
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = `HTTP Error ${response.status}: Failed to upload`;
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      throw new Error(errorMessage);
+    }
+
+    return response.json() as Promise<T>;
+  },
 };
+
+// ─── API endpoints wrapping ──────────────────────────────────────────────────
+
+export interface IEsgAuditInput {
+  title: string;
+  facilityName: string;
+  facilityType: string;
+  location: string;
+  auditYear: number;
+  scopeCategory: string;
+  carbonScoreTons: number;
+  energyUsageKwh: number;
+  riskRating: string;
+  shortDescription: string;
+  fullOverview: string;
+  imageUrl?: string;
+  tags?: string[];
+}
+
+export interface IParsedBillResponse {
+  facilityName: string;
+  facilityType: 'Manufacturing' | 'Data Center' | 'Corporate Office' | 'Logistics Hub' | 'Retail Store';
+  energyUsageKwh: number;
+  estimatedCarbonTons: number;
+  scopeCategory: 'Scope 1 (Direct)' | 'Scope 2 (Indirect Energy)' | 'Scope 3 (Value Chain)';
+  riskRating: 'Low Carbon' | 'Moderate Impact' | 'High Emissions' | 'Critical Failure';
+  shortDescription: string;
+  fullOverview: string;
+}
+
+/**
+ * Uploads a utility bill invoice file to parse it via Gemini AI.
+ */
+export async function parseUtilityBill(file: File): Promise<IParsedBillResponse> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await apiClient.postFormData<{ status: string; data: IParsedBillResponse }>(
+    '/ai/parse-bill',
+    formData
+  );
+  return res.data;
+}
+
+/**
+ * Creates a new ESG audit.
+ */
+export async function createAudit(data: IEsgAuditInput): Promise<unknown> {
+  return apiClient.post('/audits', data);
+}
+
 export default apiClient;

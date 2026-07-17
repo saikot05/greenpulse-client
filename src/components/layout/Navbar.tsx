@@ -15,7 +15,7 @@ import {
 import { useSession, signOut } from '@/lib/auth-client';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 
-/* ─── Nav link definitions ──────────────────────────────────────────────── */
+/* --- Nav link definitions ------------------------------------------------ */
 const PUBLIC_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Explore Audits', href: '/explore' },
@@ -30,7 +30,7 @@ const AUTH_LINKS = [
   { label: 'Analytics', href: '/analytics' },
 ];
 
-/* ─── User avatar helpers ────────────────────────────────────────────────── */
+/* --- User avatar helpers -------------------------------------------------- */
 function getInitials(name: string): string {
   return name
     .split(' ')
@@ -53,7 +53,7 @@ function avatarColour(name: string): string {
   return palette[Math.abs(hash) % palette.length];
 }
 
-/* ─── Avatar Dropdown ────────────────────────────────────────────────────── */
+/* --- Avatar Dropdown ------------------------------------------------------ */
 function UserDropdown({
   name,
   email,
@@ -181,7 +181,7 @@ function DropdownLink({
   );
 }
 
-/* ─── Main Navbar ────────────────────────────────────────────────────────── */
+/* --- Main Navbar ---------------------------------------------------------- */
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
