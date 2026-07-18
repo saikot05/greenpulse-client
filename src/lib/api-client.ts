@@ -239,4 +239,23 @@ export async function analyzeCarbonData(data: any[]): Promise<any> {
   return res.data;
 }
 
+export async function askSupportAgent(messages: Array<{ role: string; content: string }>): Promise<{ text: string }> {
+  const res = await apiClient.post<{ status: string; data: { text: string } }>('/ai/chat', {
+    messages,
+    stream: false,
+  });
+  return res.data;
+}
+
+export async function analyzeTelemetryTelemetry(file: File): Promise<any> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await apiClient.postFormData<{ status: string; data: any }>(
+    '/ai/analyze-telemetry',
+    formData
+  );
+  return res.data;
+}
+
 export default apiClient;

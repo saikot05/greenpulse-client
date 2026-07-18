@@ -2,45 +2,43 @@
 
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import Papa from 'papaparse';
 import { useMutation } from '@tanstack/react-query';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { analyzeCarbonData } from '@/lib/api-client';
-import { CloudUpload, AlertCircle, CheckCircle, Flame } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
+import { analyzeTelemetryTelemetry } from '@/lib/api-client';
+import { CloudUpload, AlertTriangle, CheckCircle, Flame, ShieldAlert, TrendingUp, BarChart2 } from 'lucide-react';
+import { Card, Spinner } from '@heroui/react';
 
-interface CarbonAnalysisResult {
-  summary: {
-    totalEmissionsCo2e: number;
-    scope1: number;
-    scope2: number;
-    scope3: number;
-    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+interface TelemetryAnalysisResult {
+  summary: string;
+  anomalies: string[];
+  kpiMetrics: {
+    totalEmissions: number;
+    peakUsageTime: string;
+    efficiencyScore: number;
   };
-  anomalies: Array<{
-    date: string;
-    issue: string;
-    severity: 'WARNING' | 'CRITICAL';
-  }>;
-  recommendations: Array<{
-    title: string;
-    action: string;
-    estimatedReductionImpact: string;
-  }>;
   chartData: Array<{
-    name: string;
-    value: number;
+    label: string;
+    emissions: number;
+    consumption: number;
   }>;
 }
-
-const COLORS = ['#10b981', '#34d399', '#6ee7b7']; // Green palette for scopes
 
 export default function CarbonAnalysisPanel() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const { mutate, data, isPending } = useMutation({
-    mutationFn: analyzeCarbonData,
+  const { mutate, data, isPending } = useMutation<TelemetryAnalysisResult, Error, File>({
+    mutationFn: analyzeTelemetryTelemetry,
     onError: (err: any) => {
-      setErrorMsg(err.message || 'Failed to analyze data.');
+      setErrorMsg(err.message || 'Failed to analyze telemetry data file.');
     },
   });
 
@@ -49,33 +47,14 @@ export default function CarbonAnalysisPanel() {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    if (file.name.endsWith('.csv')) {
-      Papa.parse(file, {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          if (results.errors.length) {
-            setErrorMsg('Failed to parse CSV.');
-            return;
-          }
-          mutate(results.data);
-        },
-      });
-    } else if (file.name.endsWith('.json')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const json = JSON.parse(e.target?.result as string);
-          mutate(Array.isArray(json) ? json : [json]);
-        } catch {
-          setErrorMsg('Failed to parse JSON.');
-        }
-      };
-      reader.readAsText(file);
-    } else {
-      setErrorMsg('Unsupported file format. Please upload CSV or JSON.');
+    const allowedExtensions = ['.csv', '.json'];
+    const hasValidExt = allowedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext));
+    if (!hasValidExt) {
+      setErrorMsg('Unsupported file format. Please upload a CSV or JSON file.');
+      return;
     }
+
+    mutate(file);
   }, [mutate]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -88,115 +67,141 @@ export default function CarbonAnalysisPanel() {
   });
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* Upload Area */}
+    <div className="w-full max-w-6xl mx-auto space-y-8">
+      {/* Drag & Drop File Upload */}
       <div 
         {...getRootProps()} 
-        className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-colors
-          ${isDragActive ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/80'}`}
+        className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
+          ${isDragActive ? 'border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-500/5' : 'border-neutral-300 dark:border-neutral-800 bg-white dark:bg-neutral-900/60 hover:bg-neutral-50 dark:hover:bg-neutral-900/80 shadow-sm'}`}
       >
         <input {...getInputProps()} />
-        <CloudUpload className="h-12 w-12 text-emerald-500 mb-4" />
+        <CloudUpload className="h-12 w-12 text-emerald-500 mb-4 animate-bounce" />
         <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-          {isDragActive ? 'Drop your carbon records here' : 'Drag & drop Carbon Records'}
+          {isDragActive ? 'Drop your carbon telemetry here' : 'Drag & drop Telemetry logs'}
         </h3>
-        <p className="text-sm text-neutral-500 mt-2">
-          Upload CSV or JSON files containing energy usage, fleet data, or supply chain logs.
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2 max-w-md text-center">
+          Upload energy telemetry CSV or JSON files (up to 5MB) containing hourly consumption metrics to receive AI carbon classifications.
         </p>
       </div>
 
       {errorMsg && (
-        <div className="p-4 rounded-xl bg-red-50 text-red-600 border border-red-200 flex items-center gap-2">
-          <AlertCircle className="h-5 w-5" /> {errorMsg}
+        <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-950 flex items-center gap-2 text-xs font-semibold">
+          <AlertTriangle className="h-5 w-5 shrink-0" /> {errorMsg}
         </div>
       )}
 
-      {/* Loading State */}
+      {/* Loading & Processing State */}
       {isPending && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
-          <div className="h-32 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
-          <div className="h-32 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
-          <div className="h-32 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
-          <div className="col-span-1 md:col-span-3 h-64 bg-neutral-200 dark:bg-neutral-800 rounded-2xl mt-4"></div>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
+            <div className="h-32 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
+            <div className="h-32 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
+            <div className="h-32 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
+          </div>
+          <Card className="p-8 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col items-center justify-center min-h-[300px] gap-3">
+            <Spinner size="md" className="text-emerald-500" />
+            <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+              Smart AI Agent is parsing logs and calculating Scope emissions...
+            </p>
+          </Card>
         </div>
       )}
 
       {/* Results Rendering */}
       {data && !isPending && (
-        <div className="space-y-6">
-          {/* Summary Cards */}
+        <div className="space-y-6 animate-fade-in">
+          {/* KPI Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-sm">
-              <p className="text-sm text-neutral-500 font-medium mb-1">Total Emissions (CO2e)</p>
-              <h4 className="text-3xl font-bold text-neutral-900 dark:text-white">
-                {data.summary.totalEmissionsCo2e.toLocaleString()} <span className="text-lg font-normal text-neutral-500">tons</span>
-              </h4>
-            </div>
-            <div className="p-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-sm">
-              <p className="text-sm text-neutral-500 font-medium mb-1">Risk Level</p>
-              <div className="flex items-center gap-2 mt-1">
-                {data.summary.riskLevel === 'HIGH' ? (
-                  <Flame className="h-8 w-8 text-red-500" />
-                ) : data.summary.riskLevel === 'MEDIUM' ? (
-                  <AlertCircle className="h-8 w-8 text-yellow-500" />
-                ) : (
-                  <CheckCircle className="h-8 w-8 text-emerald-500" />
-                )}
-                <h4 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                  {data.summary.riskLevel}
+            <Card className="p-6 border border-emerald-500/20 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-lg shadow-emerald-500/5 flex flex-row items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                <Flame className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Total Emissions</p>
+                <h4 className="text-2xl font-extrabold text-neutral-950 dark:text-white mt-1">
+                  {data.kpiMetrics.totalEmissions.toLocaleString()} <span className="text-xs font-normal text-neutral-500">tons CO₂e</span>
                 </h4>
               </div>
-            </div>
-            <div className="p-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-sm flex items-center justify-center">
-              <ResponsiveContainer width="100%" height={100}>
-                <PieChart>
-                  <Pie data={data.chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={30} outerRadius={45}>
-                    {data.chartData.map((_: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            </Card>
+
+            <Card className="p-6 border border-amber-500/20 bg-amber-50/20 dark:bg-amber-950/10 shadow-lg shadow-amber-500/5 flex flex-row items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                <TrendingUp className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Peak Usage Period</p>
+                <h4 className="text-lg font-extrabold text-neutral-950 dark:text-white mt-1 break-words">
+                  {data.kpiMetrics.peakUsageTime}
+                </h4>
+              </div>
+            </Card>
+
+            <Card className="p-6 border border-cyan-500/20 bg-cyan-50/20 dark:bg-cyan-950/10 shadow-lg shadow-cyan-500/5 flex flex-row items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
+                <CheckCircle className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Efficiency Score</p>
+                <h4 className="text-2xl font-extrabold text-neutral-950 dark:text-white mt-1">
+                  {data.kpiMetrics.efficiencyScore} <span className="text-xs font-normal text-neutral-500">/ 100</span>
+                </h4>
+              </div>
+            </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Anomalies */}
-            <div className="p-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-sm">
-              <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-red-500" /> Detected Anomalies
+          {/* Recharts Graphical Line Chart */}
+          <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm space-y-4">
+            <div className="flex items-center gap-2">
+              <BarChart2 className="h-5 w-5 text-emerald-500" />
+              <h3 className="text-sm font-bold text-neutral-900 dark:text-white">Emissions & Consumption Trends</h3>
+            </div>
+            <div className="w-full h-80 pt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data.chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-neutral-200 dark:stroke-neutral-800" />
+                  <XAxis dataKey="label" className="text-[10px] text-neutral-500" />
+                  <YAxis className="text-[10px] text-neutral-500" />
+                  <Tooltip contentStyle={{ fontSize: '11px', borderRadius: '8px' }} />
+                  <Legend wrapperStyle={{ fontSize: '11px' }} />
+                  <Line type="monotone" dataKey="consumption" name="Energy Usage (kWh)" stroke="#f59e0b" strokeWidth={2.5} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="emissions" name="Footprint (tons CO₂e)" stroke="#10b981" strokeWidth={2.5} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+
+          {/* AI Trend Analysis & Anomalies Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <Card className="lg:col-span-7 p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-neutral-900 dark:text-white">AI Technical Trend Analysis</h3>
+              <p className="text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed whitespace-pre-line border-t border-neutral-100 dark:border-neutral-800 pt-4 font-medium">
+                {data.summary}
+              </p>
+            </Card>
+
+            <Card className="lg:col-span-5 p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-neutral-900 dark:text-white flex items-center gap-2">
+                <ShieldAlert className="h-5 w-5 text-red-500" /> Anomalies Checklist
               </h3>
-              <div className="space-y-4">
-                {data.anomalies.map((anomaly: any, i: number) => (
-                  <div key={i} className="flex gap-3 items-start border-l-4 border-red-500 pl-3 py-1">
-                    <div>
-                      <p className="text-xs font-semibold text-neutral-500">{anomaly.date} • {anomaly.severity}</p>
-                      <p className="text-sm text-neutral-800 dark:text-neutral-200 mt-1">{anomaly.issue}</p>
-                    </div>
+              <div className="space-y-3 pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                {data.anomalies.map((anomaly, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 bg-red-500/5 rounded-xl border border-red-500/10">
+                    <span className="text-red-500 text-xs shrink-0 mt-0.5">⚠️</span>
+                    <p className="text-xs text-neutral-600 dark:text-neutral-350 leading-relaxed font-semibold">
+                      {anomaly}
+                    </p>
                   </div>
                 ))}
                 {data.anomalies.length === 0 && (
-                  <p className="text-sm text-neutral-500">No anomalies detected in the provided records.</p>
+                  <div className="flex items-start gap-3 p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
+                    <span className="text-emerald-500 text-xs shrink-0">✅</span>
+                    <p className="text-xs text-neutral-600 dark:text-neutral-350 leading-relaxed font-semibold">
+                      No operational baseline anomalies detected.
+                    </p>
+                  </div>
                 )}
               </div>
-            </div>
-
-            {/* Recommendations */}
-            <div className="p-6 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-sm">
-              <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-emerald-500" /> AI Recommendations
-              </h3>
-              <div className="space-y-4">
-                {data.recommendations.map((rec: any, i: number) => (
-                  <div key={i} className="p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl border border-emerald-100 dark:border-emerald-900/30">
-                    <h4 className="font-semibold text-emerald-800 dark:text-emerald-400 text-sm">{rec.title}</h4>
-                    <p className="text-sm text-neutral-700 dark:text-neutral-300 mt-1">{rec.action}</p>
-                    <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-2 font-medium">Impact: {rec.estimatedReductionImpact}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            </Card>
           </div>
         </div>
       )}

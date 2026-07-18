@@ -143,7 +143,7 @@ export default function AuditDetailsPage({ params }: { params: Promise<{ id: str
         </div>
 
         {/* 2. Core Metrics grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm flex flex-row items-center gap-4 overflow-hidden">
             <div className="h-12 w-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
               <CircleTree className="h-6 w-6" />

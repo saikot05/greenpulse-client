@@ -28,7 +28,8 @@ const AUTH_LINKS = [
   { label: 'Explore Audits', href: '/explore' },
   { label: 'Add Audit', href: '/items/add' },
   { label: 'Manage Audits', href: '/items/manage' },
-  { label: 'Analytics', href: '/carbon-analysis' },
+  { label: 'Telemetry Analyzer', href: '/carbon-analysis' },
+  { label: 'Help & Support', href: '/support' },
 ];
 
 /* --- User avatar helpers -------------------------------------------------- */
