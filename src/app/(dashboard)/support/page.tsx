@@ -230,13 +230,14 @@ export default function SupportPage() {
           onSubmit={handleFormSubmit}
           className="flex gap-2 pb-4"
         >
-          <Input
+          <input
             id="support-chat-input"
+            type="text"
             placeholder="Ask AI Support Copilot..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={isPending}
-            className="flex-1 bg-white"
+            className="flex-1 bg-neutral-900 text-white placeholder-zinc-400 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500"
             aria-label="Support query input field"
           />
           <Button

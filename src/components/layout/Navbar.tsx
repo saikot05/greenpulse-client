@@ -132,13 +132,13 @@ function UserDropdown({
 
           {/* Menu items */}
           <div className="py-1.5">
-            <DropdownLink href="/items/manage" icon={<Person className="h-4 w-4" />} onClick={() => setOpen(false)}>
+            <DropdownLink href="/profile" icon={<Person className="h-4 w-4" />} onClick={() => setOpen(false)}>
               Profile
             </DropdownLink>
             <DropdownLink href="/items/manage" icon={<ChartColumn className="h-4 w-4" />} onClick={() => setOpen(false)}>
               Dashboard
             </DropdownLink>
-            <DropdownLink href="/items/manage" icon={<Gear className="h-4 w-4" />} onClick={() => setOpen(false)}>
+            <DropdownLink href="/settings" icon={<Gear className="h-4 w-4" />} onClick={() => setOpen(false)}>
               Settings
             </DropdownLink>
           </div>

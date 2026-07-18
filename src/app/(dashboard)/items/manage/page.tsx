@@ -116,8 +116,8 @@ export default function ManageAuditsPage() {
           <div className="space-y-4">
             
             {/* Desktop Table View */}
-            <div className="hidden md:block overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm">
-              <table className="w-full text-left border-collapse">
+            <div className="hidden md:block w-full overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm">
+              <table className="min-w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-neutral-50 dark:bg-neutral-950 text-[10px] uppercase font-bold tracking-wider text-neutral-400 border-b border-neutral-200 dark:border-neutral-800">
                     <th className="p-4 pl-6">Title & Facility</th>
@@ -131,11 +131,11 @@ export default function ManageAuditsPage() {
                 <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800 text-xs text-neutral-600 dark:text-neutral-300">
                   {userAudits.map((audit) => (
                     <tr key={audit._id} className="hover:bg-neutral-50/50 dark:hover:bg-neutral-900/50 transition-colors">
-                      <td className="p-4 pl-6 space-y-1">
-                        <span className="font-bold text-neutral-900 dark:text-neutral-50 block text-sm leading-snug">
+                      <td className="p-4 pl-6 space-y-1 max-w-md">
+                        <span className="font-bold text-neutral-900 dark:text-neutral-50 block text-sm leading-snug break-words">
                           {audit.title}
                         </span>
-                        <span className="text-[10px] text-neutral-400 font-semibold block uppercase">
+                        <span className="text-[10px] text-neutral-400 font-semibold block uppercase break-words pr-2">
                           {audit.facilityName} · {audit.facilityType} · FY{audit.auditYear}
                         </span>
                       </td>
@@ -160,27 +160,29 @@ export default function ManageAuditsPage() {
                           {audit.riskRating}
                         </Chip>
                       </td>
-                      <td className="p-4 pr-6 text-right space-x-1.5">
-                        <Link href={`/explore/${audit._id}`} title="View Detail">
-                          <Button size="sm" variant="outline" className="h-8 w-8 p-0 min-w-0 border border-neutral-200 dark:border-neutral-800 text-neutral-500 hover:text-emerald-500">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                        <span title="Delete Audit" className="inline-block">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            isDisabled={deleteMutation.isPending}
-                            onPress={() => {
-                              if (confirm('Are you sure you want to delete this ESG audit?')) {
-                                deleteMutation.mutate(audit._id);
-                              }
-                            }}
-                            className="h-8 w-8 p-0 min-w-0 border border-neutral-200 dark:border-neutral-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </span>
+                      <td className="p-4 pr-6">
+                        <div className="flex items-center justify-end gap-3">
+                          <Link href={`/explore/${audit._id}`} title="View Detail">
+                            <Button size="sm" variant="outline" className="h-8 w-8 p-0 min-w-0 border border-neutral-200 dark:border-neutral-800 text-neutral-500 hover:text-emerald-500">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                          <span title="Delete Audit" className="inline-block">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              isDisabled={deleteMutation.isPending}
+                              onPress={() => {
+                                if (confirm('Are you sure you want to delete this ESG audit?')) {
+                                  deleteMutation.mutate(audit._id);
+                                }
+                              }}
+                              className="h-8 w-8 p-0 min-w-0 border border-neutral-200 dark:border-neutral-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}
