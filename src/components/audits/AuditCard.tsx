@@ -32,23 +32,23 @@ export default function AuditCard({ audit }: AuditCardProps) {
 
   return (
     <Card className="w-full flex flex-col h-full border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5" variant="default">
-      {/* Visual Header / Cover Image Placeholder */}
-      <div className="relative h-44 w-full bg-gradient-to-br from-emerald-800 to-teal-900 flex items-center justify-center p-6 text-white overflow-hidden rounded-t-2xl">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.15),transparent_50%)]" />
+      {/* Visual Header / Cover Image */}
+      <div className="relative h-48 w-full rounded-t-xl overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+        <img
+          src={audit.imageUrl || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800'}
+          alt={audit.facilityName}
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+        />
         
-        <div className="flex flex-col items-center text-center gap-2 z-10">
-          <div className="rounded-full bg-white/10 p-3 backdrop-blur-sm">
-            <CircleTree className="h-6 w-6 text-emerald-400" />
-          </div>
-          <span className="text-xs font-semibold tracking-wider uppercase text-emerald-300">
+        {/* Absolute glassmorphic badges */}
+        <div className="absolute top-3 left-3 flex gap-2 z-10">
+          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/40 backdrop-blur-md border border-white/10 text-white rounded-md">
             {audit.facilityType}
           </span>
+          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/40 backdrop-blur-md border border-white/10 text-white rounded-md">
+            FY {audit.auditYear}
+          </span>
         </div>
-
-        {/* Floating Year Tag */}
-        <span className="absolute top-3 right-3 rounded-md bg-white/10 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
-          FY {audit.auditYear}
-        </span>
       </div>
 
       {/* Main Content details inside dot-notation subcomponents */}
