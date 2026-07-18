@@ -11,6 +11,20 @@ interface AuditCardProps {
   audit: IEsgAudit;
 }
 
+function getFacilityImage(type: string): string {
+  const norm = (type || '').toUpperCase();
+  if (norm.includes('OFFICE') || norm.includes('CORPORATE')) {
+    return 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600';
+  }
+  if (norm.includes('FACTORY') || norm.includes('MANUFACTURING')) {
+    return 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600';
+  }
+  if (norm.includes('WAREHOUSE') || norm.includes('LOGISTICS')) {
+    return 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=600';
+  }
+  return 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600';
+}
+
 /**
  * Audit Card using HeroUI dot-notation subcomponents and Gravity UI Icons.
  * Renders audit metrics, risk levels, and action links.
@@ -30,22 +44,24 @@ export default function AuditCard({ audit }: AuditCardProps) {
     }
   };
 
+  const cardImage = getFacilityImage(audit.facilityType);
+
   return (
-    <Card className="w-full flex flex-col h-full border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5" variant="default">
+    <Card className="group w-full flex flex-col h-full bg-white dark:bg-zinc-900/30 backdrop-blur-md border border-neutral-200/60 dark:border-zinc-800/80 hover:border-emerald-500/40 dark:hover:bg-zinc-900/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.12)] hover:-translate-y-0.5" variant="default">
       {/* Visual Header / Cover Image */}
       <div className="relative h-48 w-full rounded-t-xl overflow-hidden bg-neutral-200 dark:bg-neutral-800">
         <img
-          src={audit.imageUrl || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800'}
+          src={audit.imageUrl || cardImage}
           alt={audit.facilityName}
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
         
         {/* Absolute glassmorphic badges */}
         <div className="absolute top-3 left-3 flex gap-2 z-10">
-          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/40 backdrop-blur-md border border-white/10 text-white rounded-md">
+          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/55 backdrop-blur-sm border border-white/10 text-white rounded-md">
             {audit.facilityType}
           </span>
-          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/40 backdrop-blur-md border border-white/10 text-white rounded-md">
+          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/55 backdrop-blur-sm border border-white/10 text-white rounded-md">
             FY {audit.auditYear}
           </span>
         </div>
