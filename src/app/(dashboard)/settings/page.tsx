@@ -1,9 +1,53 @@
 'use client';
 
 import React from 'react';
-import { Card, Button, Switch } from '@heroui/react';
+import { Card, Button, Switch, Spinner } from '@heroui/react';
+import { ShieldAlert, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { useSession } from '@/lib/auth-client';
 
 export default function SettingsPage() {
+  const { data: session, isPending } = useSession();
+
+  if (isPending) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
+        <Spinner size="lg" className="text-emerald-600" />
+        <span className="text-sm text-neutral-500">Loading settings...</span>
+      </div>
+    );
+  }
+
+  const isAuditor = (session?.user as any)?.role === 'auditor';
+
+  if (isAuditor) {
+    return (
+      <div className="p-6 md:p-8 max-w-2xl mx-auto flex items-center justify-center min-h-[70vh]">
+        <Card className="w-full p-8 border border-emerald-500/20 bg-zinc-950/40 backdrop-blur-md dark:bg-zinc-900/30 text-center space-y-6 shadow-[0_0_50px_rgba(16,185,129,0.08)]">
+          <div className="mx-auto h-16 w-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <ShieldAlert className="h-8 w-8" />
+          </div>
+          
+          <div className="space-y-2">
+            <h2 className="text-xl font-bold text-neutral-900 dark:text-neutral-50">Access Denied</h2>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-md mx-auto">
+              Environmental Auditors do not possess permissions to modify core facility settings or global API keys. Contact your organization administrator to upgrade access levels.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <Link href="/explore">
+              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs transition-colors flex items-center gap-1.5 mx-auto">
+                <ArrowLeft className="h-4 w-4" />
+                Return to Dashboard
+              </Button>
+            </Link>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-8">
       <div>

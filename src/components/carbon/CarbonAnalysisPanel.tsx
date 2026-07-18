@@ -14,8 +14,10 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { analyzeTelemetryTelemetry } from '@/lib/api-client';
-import { CloudUpload, AlertTriangle, CheckCircle, Flame, ShieldAlert, TrendingUp, BarChart2, FileText } from 'lucide-react';
-import { Card, Spinner } from '@heroui/react';
+import { CloudUpload, AlertTriangle, CheckCircle, Flame, ShieldAlert, TrendingUp, BarChart2, FileText, ArrowLeft } from 'lucide-react';
+import { Card, Spinner, Button } from '@heroui/react';
+import Link from 'next/link';
+import { useSession } from '@/lib/auth-client';
 
 interface TelemetryAnalysisResult {
   summary: string;
@@ -33,6 +35,7 @@ interface TelemetryAnalysisResult {
 }
 
 export default function CarbonAnalysisPanel() {
+  const { data: session, isPending: isSessionLoading } = useSession();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const { mutate, data, isPending } = useMutation<TelemetryAnalysisResult, Error, File>({
@@ -41,6 +44,43 @@ export default function CarbonAnalysisPanel() {
       setErrorMsg(err.message || 'Failed to analyze telemetry data file.');
     },
   });
+
+  const isAdmin = (session?.user as any)?.role === 'admin';
+
+  if (isSessionLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px] gap-3">
+        <Spinner size="md" className="text-emerald-500" />
+        <p className="text-xs text-neutral-400">Loading session and parameters...</p>
+      </div>
+    );
+  }
+
+  if (isAdmin) {
+    return (
+      <Card className="w-full p-8 border border-emerald-500/20 bg-zinc-950/40 backdrop-blur-md dark:bg-zinc-900/30 text-center space-y-6 shadow-[0_0_50px_rgba(16,185,129,0.08)] max-w-2xl mx-auto">
+        <div className="mx-auto h-16 w-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <ShieldAlert className="h-8 w-8" />
+        </div>
+        
+        <div className="space-y-2">
+          <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Access Denied</h2>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-md mx-auto">
+            Environmental Auditors have exclusive read-write access to telemetry analyzers. Tenant Administrators do not possess authorization to log or modify telemetry records.
+          </p>
+        </div>
+
+        <div className="pt-2">
+          <Link href="/items/manage">
+            <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs transition-colors flex items-center gap-1.5 mx-auto">
+              <ArrowLeft className="h-4 w-4" />
+              Manage Audits View
+            </Button>
+          </Link>
+        </div>
+      </Card>
+    );
+  }
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setErrorMsg(null);
