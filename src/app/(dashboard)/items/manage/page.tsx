@@ -84,6 +84,41 @@ export default function ManageAuditsPage() {
     (audit) => String(audit.createdBy) === String(session.user.id)
   );
 
+  const exportToCsv = () => {
+    if (!userAudits || userAudits.length === 0) return;
+
+    const escapeCsv = (val: any) => {
+      if (val === null || val === undefined) return '';
+      const str = String(val);
+      if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const headers = ['Title', 'Facility Type', 'Location', 'Carbon (tons CO2e)', 'Energy (kWh)', 'Risk Rating', 'Fiscal Year'];
+    const rows = userAudits.map((audit) => [
+      escapeCsv(audit.title),
+      escapeCsv(audit.facilityType),
+      escapeCsv(audit.location),
+      audit.carbonScoreTons,
+      audit.energyUsageKwh,
+      escapeCsv(audit.riskRating),
+      audit.auditYear
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'greenpulse_audit_dataset.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex-1 w-full bg-neutral-50/50 dark:bg-neutral-950 py-10 transition-colors duration-300">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-8">
@@ -98,11 +133,21 @@ export default function ManageAuditsPage() {
               Review, inspect, or delete compliance records you have logged in the system.
             </p>
           </div>
-          <Link href="/items/add">
-            <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-sm transition-colors shadow-md">
-              Create New Audit
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3 flex-wrap">
+            {userAudits.length > 0 && (
+              <Button 
+                onPress={exportToCsv}
+                className="bg-transparent border border-emerald-600 hover:bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 font-semibold rounded-lg text-sm transition-colors shadow-sm"
+              >
+                Export Table Dataset (CSV)
+              </Button>
+            )}
+            <Link href="/items/add">
+              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-sm transition-colors shadow-md">
+                Create New Audit
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Audit List Container */}
