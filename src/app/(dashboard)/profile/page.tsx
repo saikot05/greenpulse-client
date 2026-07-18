@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSession } from '@/lib/auth-client';
-import { Card, Button, Spinner, Avatar } from '@heroui/react';
+import { Card, Button, Spinner } from '@heroui/react';
 import Link from 'next/link';
 
 export default function ProfilePage() {
@@ -29,6 +29,9 @@ export default function ProfilePage() {
   }
 
   const user = session.user;
+  const [imageError, setImageError] = React.useState(false);
+  const userInitial = user.name?.charAt(0).toUpperCase() || 'U';
+  const hasAvatar = user.image && !imageError;
 
   return (
     <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-8">
@@ -44,7 +47,20 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* User Card */}
         <Card className="md:col-span-4 p-6 border border-emerald-500/20 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-lg shadow-emerald-500/5 flex flex-col items-center justify-center text-center space-y-4">
-          <Avatar className="h-20 w-20 text-xl font-bold text-white bg-emerald-600" />
+          {hasAvatar ? (
+            <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-emerald-500/20 bg-neutral-200 dark:bg-neutral-800 shadow-inner">
+              <img
+                src={user.image!}
+                alt={user.name}
+                onError={() => setImageError(true)}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="h-20 w-20 rounded-full border-2 border-emerald-500/20 bg-emerald-700/80 dark:bg-emerald-950/60 backdrop-blur-md flex items-center justify-center font-bold text-2xl text-white shadow-inner">
+              {userInitial}
+            </div>
+          )}
           <div>
             <h3 className="font-bold text-lg text-neutral-900 dark:text-neutral-50">{user.name}</h3>
             <p className="text-xs text-neutral-500">{user.email}</p>
