@@ -144,37 +144,37 @@ export default function AuditDetailsPage({ params }: { params: Promise<{ id: str
 
         {/* 2. Core Metrics grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm flex flex-row items-center gap-4">
+          <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm flex flex-row items-center gap-4 overflow-hidden">
             <div className="h-12 w-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
               <CircleTree className="h-6 w-6" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Carbon Intensity</span>
-              <span className="text-xl font-extrabold text-neutral-950 dark:text-white mt-0.5 block">
+              <span className="text-xl font-extrabold text-neutral-950 dark:text-white mt-0.5 block break-words leading-tight">
                 {audit.carbonScoreTons.toLocaleString()} tons CO₂e
               </span>
             </div>
           </Card>
 
-          <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm flex flex-row items-center gap-4">
+          <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm flex flex-row items-center gap-4 overflow-hidden">
             <div className="h-12 w-12 rounded-xl bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
               <Thunderbolt className="h-6 w-6" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Energy Consumption</span>
-              <span className="text-xl font-extrabold text-neutral-950 dark:text-white mt-0.5 block">
+              <span className="text-xl font-extrabold text-neutral-950 dark:text-white mt-0.5 block break-words leading-tight">
                 {audit.energyUsageKwh.toLocaleString()} kWh
               </span>
             </div>
           </Card>
 
-          <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm flex flex-row items-center gap-4">
+          <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm flex flex-row items-center gap-4 overflow-hidden">
             <div className="h-12 w-12 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
               <ShieldCheck className="h-6 w-6" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Scope Protocol</span>
-              <span className="text-xl font-extrabold text-neutral-950 dark:text-white mt-0.5 block truncate">
+              <span className="text-xl font-extrabold text-neutral-950 dark:text-white mt-0.5 block break-words leading-tight">
                 {audit.scopeCategory}
               </span>
             </div>
