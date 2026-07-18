@@ -155,6 +155,8 @@ export default function SaaSLandingPage() {
       {/* 1. Hero Section */}
       <section className="relative overflow-hidden pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-neutral-100 dark:border-neutral-800">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--color-emerald-50),transparent_50%)] dark:bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.05),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-b from-emerald-500/20 to-transparent opacity-60 blur-[100px] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           
           {/* Badge Pill */}
@@ -168,7 +170,7 @@ export default function SaaSLandingPage() {
 
           {/* Title */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-neutral-900 dark:text-white max-w-4xl mx-auto leading-[1.1] mb-6">
-            Automate ESG Compliance & <span className="text-emerald-600 dark:text-emerald-400">Decarbonize</span> Facilities at Scale
+            Automate ESG Compliance & <span className="bg-gradient-to-r from-emerald-400 via-green-400 to-teal-500 bg-clip-text text-transparent">Decarbonize</span> Facilities at Scale
           </h1>
 
           {/* Subtitle */}
@@ -180,7 +182,7 @@ export default function SaaSLandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Link
               href="/explore"
-              className="w-full sm:w-auto h-11 px-6 font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-colors flex items-center justify-center gap-2 cursor-pointer text-sm"
+              className="w-full sm:w-auto h-11 px-6 font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2 cursor-pointer text-sm"
             >
               <span>Explore Public Audits</span>
               <ArrowRight className="h-4 w-4" />
@@ -188,7 +190,7 @@ export default function SaaSLandingPage() {
             <Button
               variant="secondary"
               onPress={() => setShowDemoModal(true)}
-              className="w-full sm:w-auto h-11 px-6 font-semibold border border-neutral-300 bg-white hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-lg shadow-sm transition-colors cursor-pointer"
+              className="w-full sm:w-auto h-11 px-6 font-semibold border border-neutral-300 bg-white hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-lg shadow-sm transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] cursor-pointer"
             >
               Request Platform Demo
             </Button>
