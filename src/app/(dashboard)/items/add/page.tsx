@@ -155,7 +155,7 @@ export default function AddAuditPage() {
 
   // Gemini OCR Scan utility bill mutation
   const ocrMutation = useMutation({
-    mutationFn: parseUtilityBill,
+    mutationFn: (file: File) => parseUtilityBill(file),
     onMutate: () => {
       setOcrError(null);
       setOcrSuccess(false);
@@ -165,23 +165,28 @@ export default function AddAuditPage() {
       }, 400);
       return { interval };
     },
-    onSuccess: (data) => {
+    onSuccess: (rawData) => {
       setOcrSuccess(true);
       setOcrProgress(100);
       
+      const data = (rawData as any)?.data || rawData;
+      const facilityName = data?.facilityName || 'Unknown Facility';
+      const energyUsageKwh = Number(data?.energyUsageKwh ?? data?.energyUsage ?? 0);
+      const estimatedCarbonTons = Number(data?.estimatedCarbonTons ?? data?.carbonScoreTons ?? 0);
+
       // Auto-populate form fields
       reset({
-        title: `Audit - ${data.facilityName} (${data.energyUsageKwh} kWh)`,
-        facilityName: data.facilityName,
-        facilityType: data.facilityType,
+        title: `Audit - ${facilityName} (${energyUsageKwh} kWh)`,
+        facilityName: facilityName,
+        facilityType: data?.facilityType || 'Corporate Office',
         location: 'Detected Location',
         auditYear: new Date().getFullYear(),
-        scopeCategory: data.scopeCategory,
-        carbonScoreTons: data.estimatedCarbonTons,
-        energyUsageKwh: data.energyUsageKwh,
-        riskRating: data.riskRating,
-        shortDescription: data.shortDescription,
-        fullOverview: data.fullOverview,
+        scopeCategory: data?.scopeCategory || 'Scope 2 (Indirect Energy)',
+        carbonScoreTons: estimatedCarbonTons,
+        energyUsageKwh: energyUsageKwh,
+        riskRating: data?.riskRating || 'Low Carbon',
+        shortDescription: data?.shortDescription || 'AI Generated Decarbonization Audit',
+        fullOverview: data?.fullOverview || 'Detailed environmental sustainability assessment.',
         imageUrl: '',
       });
     },
@@ -190,7 +195,7 @@ export default function AddAuditPage() {
       setOcrProgress(0);
       setToastMsg({
         type: 'error',
-        text: 'Gemini rate limit exceeded. Please wait 10-15 seconds and retry, or enter values manually.',
+        text: 'The AI Agent router quota is temporarily full. Please wait 10-15 seconds and retry, or enter values manually.',
       });
       setTimeout(() => setToastMsg(null), 8000);
     },
@@ -240,9 +245,10 @@ export default function AddAuditPage() {
   };
 
   const onSubmit = (data: AuditFormData) => {
-    const payload: IEsgAuditInput = {
+    const payload: IEsgAuditInput & { createdBy?: string } = {
       ...data,
       tags: [], // Handled by server if empty
+      createdBy: session?.user?.id,
     };
     createAuditMutation.mutate(payload);
   };
@@ -275,9 +281,14 @@ export default function AddAuditPage() {
 
       {/* ─── AI Dropzone Section ─────────────────────────────────────────────── */}
       <Card className="p-6 mb-8 border border-emerald-500/20 bg-emerald-50/20 dark:bg-emerald-950/10 shadow-lg shadow-emerald-500/5">
-        <h2 className="text-md font-semibold text-emerald-800 dark:text-emerald-400 mb-3 flex items-center gap-2">
-          <span>✨</span> Magic AI Pre-fill with Utility Bill OCR
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <h2 className="text-md font-semibold text-emerald-800 dark:text-emerald-400 flex items-center gap-2">
+            <span>✨</span> Magic AI Pre-fill with Utility Bill OCR
+          </h2>
+          <span className="inline-flex items-center rounded-md bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
+            ✨ Powered by GreenPulse Smart AI Agent
+          </span>
+        </div>
         
         <div
           onDragOver={handleDragOver}
@@ -299,7 +310,7 @@ export default function AddAuditPage() {
               <div className="w-full max-w-xs space-y-4">
                 <Spinner size="md" />
                 <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                  Gemini AI is analyzing invoice data...
+                  Smart AI Agent is analyzing invoice data...
                 </p>
                 <div className="w-full bg-neutral-200 dark:bg-neutral-800 h-2.5 rounded-full overflow-hidden">
                   <div className="bg-emerald-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${ocrProgress}%` }} />

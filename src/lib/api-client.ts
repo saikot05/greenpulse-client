@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 /**
  * Reads the Better Auth session token directly from client cookies.
@@ -81,6 +81,32 @@ export const apiClient = {
     return response.json() as Promise<T>;
   },
 
+  async delete<T>(path: string): Promise<T> {
+    const token = getSessionToken();
+    const response = await fetch(`${BASE_URL}${path}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = `HTTP Error ${response.status}: Failed to delete`;
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      throw new Error(errorMessage);
+    }
+
+    return response.json() as Promise<T>;
+  },
+
   async postFormData<T>(path: string, formData: FormData): Promise<T> {
     const token = getSessionToken();
     const response = await fetch(`${BASE_URL}${path}`, {
@@ -146,11 +172,11 @@ export async function parseUtilityBill(file: File): Promise<IParsedBillResponse>
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await apiClient.postFormData<{ status: string; data: IParsedBillResponse }>(
+  const res = await apiClient.postFormData<any>(
     '/ai/parse-bill',
     formData
   );
-  return res.data;
+  return res?.data || res;
 }
 
 /**
@@ -158,6 +184,59 @@ export async function parseUtilityBill(file: File): Promise<IParsedBillResponse>
  */
 export async function createAudit(data: IEsgAuditInput): Promise<unknown> {
   return apiClient.post('/audits', data);
+}
+
+/**
+ * Fetches all audits (filtered & paginated).
+ */
+export async function getAudits(params?: Record<string, string | number | undefined>): Promise<any> {
+  const res = await apiClient.get<{ status: string; data: any }>('/audits', params);
+  return res.data;
+}
+
+/**
+ * Fetches a single ESG audit by ID.
+ */
+export async function getAudit(id: string): Promise<any> {
+  const res = await apiClient.get<{ status: string; data: any }>(`/audits/${id}`);
+  return res.data;
+}
+
+/**
+ * Deletes an ESG audit by ID.
+ */
+export async function deleteAudit(id: string): Promise<any> {
+  return apiClient.delete<{ status: string; message: string }>(`/audits/${id}`);
+}
+
+/**
+ * Sends a chat message to the sustainability copilot.
+ */
+export async function sendChatMessage(sessionId: string, message: string): Promise<string> {
+  const res = await apiClient.post<{ status: string; data: string }>('/ai/chat', {
+    sessionId,
+    message,
+  });
+  return res.data;
+}
+
+/**
+ * Uploads a telemetry CSV or JSON file to analyze carbon footprint.
+ */
+export async function analyzeTelemetryFile(file: File): Promise<any> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await apiClient.postFormData<{ status: string; data: any }>(
+    '/ai/analyze-data',
+    formData
+  );
+  return res.data;
+}
+
+export async function analyzeCarbonData(data: any[]): Promise<any> {
+  const res = await apiClient.post<{ success: boolean; data: any }>('/carbon/analyze', { data });
+  return res.data;
 }
 
 export default apiClient;

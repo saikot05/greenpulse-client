@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Card, Chip, Button } from '@heroui/react';
 import { MapPin, Thunderbolt, CircleTree, ArrowRight } from '@gravity-ui/icons';
+
 import type { IEsgAudit } from '../../types/audit.js';
 
 interface AuditCardProps {
@@ -102,13 +104,15 @@ export default function AuditCard({ audit }: AuditCardProps) {
       </Card.Content>
 
       <Card.Footer className="px-5 pb-5 pt-2">
-        <Button
-          variant="secondary"
-          className="w-full text-xs font-semibold border border-neutral-200 dark:border-neutral-800 dark:hover:bg-neutral-800/40 text-neutral-700 dark:text-neutral-300 flex items-center justify-center gap-1.5"
-        >
-          <span>View Details</span>
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        <Link href={`/explore/${audit._id}`} className="w-full">
+          <Button
+            variant="secondary"
+            className="w-full text-xs font-semibold border border-neutral-200 dark:border-neutral-800 dark:hover:bg-neutral-800/40 text-neutral-700 dark:text-neutral-300 flex items-center justify-center gap-1.5"
+          >
+            <span>View Details</span>
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
       </Card.Footer>
     </Card>
   );

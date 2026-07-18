@@ -1,11 +1,15 @@
 import { createAuthClient } from 'better-auth/react';
+import { jwtClient } from 'better-auth/client/plugins';
 
 /**
  * Better Auth client instance.
  * Docs: https://www.better-auth.com/docs/installation#create-client-instance
  */
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
+  baseURL: process.env.NEXT_PUBLIC_APP_URL!,
+  plugins: [
+    jwtClient(),
+  ],
 });
 
 /**

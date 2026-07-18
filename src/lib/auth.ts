@@ -8,24 +8,24 @@
 import { betterAuth } from 'better-auth';
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { MongoClient } from 'mongodb';
+import { jwt } from 'better-auth/plugins';
 
 // MongoDB client
-// The MONGODB_URI must include the database name, e.g.:
-//   mongodb+srv://user:pass@cluster/greenpulse?...
-// client.db() reads the db name from the URI automatically.
 const client = new MongoClient(process.env.MONGODB_URI!);
 
 // Auth instance
 export const auth = betterAuth({
-  // Docs: https://www.better-auth.com/docs/adapters/mongodb
   database: mongodbAdapter(client.db(), { client }),
+  plugins: [
+    jwt(),
+  ],
 
   // Required: used for JWT signing and cookie encryption
   secret: process.env.BETTER_AUTH_SECRET!,
 
   // Required: base URL must match the domain that runs /api/auth/*
   // Set BETTER_AUTH_URL in .env.local to avoid redirect_uri_mismatch with Google
-  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
+  baseURL: process.env.BETTER_AUTH_URL!,
 
   // Email / Password
   // Docs: https://www.better-auth.com/docs/authentication/email-password

@@ -19,6 +19,7 @@ import ThemeToggle from '@/components/shared/ThemeToggle';
 const PUBLIC_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Explore Audits', href: '/explore' },
+  { label: 'Analytics', href: '/carbon-analysis' },
   { label: 'About', href: '/about' },
 ];
 
@@ -27,7 +28,7 @@ const AUTH_LINKS = [
   { label: 'Explore Audits', href: '/explore' },
   { label: 'Add Audit', href: '/items/add' },
   { label: 'Manage Audits', href: '/items/manage' },
-  { label: 'Analytics', href: '/explore' },
+  { label: 'Analytics', href: '/carbon-analysis' },
 ];
 
 /* --- User avatar helpers -------------------------------------------------- */
