@@ -14,7 +14,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { analyzeTelemetryTelemetry } from '@/lib/api-client';
-import { CloudUpload, AlertTriangle, CheckCircle, Flame, ShieldAlert, TrendingUp, BarChart2 } from 'lucide-react';
+import { CloudUpload, AlertTriangle, CheckCircle, Flame, ShieldAlert, TrendingUp, BarChart2, FileText } from 'lucide-react';
 import { Card, Spinner } from '@heroui/react';
 
 interface TelemetryAnalysisResult {
@@ -67,8 +67,9 @@ export default function CarbonAnalysisPanel() {
   });
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-8">
-      {/* Drag & Drop File Upload */}
+    <>
+      <div className="w-full max-w-6xl mx-auto space-y-8 print:hidden">
+        {/* Drag & Drop File Upload */}
       <div 
         {...getRootProps()} 
         className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-300
@@ -151,9 +152,18 @@ export default function CarbonAnalysisPanel() {
 
           {/* Recharts Graphical Line Chart */}
           <Card className="p-6 border border-neutral-200/60 dark:border-neutral-800 bg-white dark:bg-neutral-900/90 shadow-sm space-y-4">
-            <div className="flex items-center gap-2">
-              <BarChart2 className="h-5 w-5 text-emerald-500" />
-              <h3 className="text-sm font-bold text-neutral-900 dark:text-white">Emissions & Consumption Trends</h3>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <BarChart2 className="h-5 w-5 text-emerald-500" />
+                <h3 className="text-sm font-bold text-neutral-900 dark:text-white">Emissions & Consumption Trends</h3>
+              </div>
+              <button
+                onClick={() => window.print()}
+                className="border border-emerald-500 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition-colors duration-300"
+              >
+                <FileText className="h-3.5 w-3.5" />
+                Download AI Executive Report (PDF)
+              </button>
             </div>
             <div className="w-full h-80 pt-4">
               <ResponsiveContainer width="100%" height="100%">
@@ -184,14 +194,34 @@ export default function CarbonAnalysisPanel() {
                 <ShieldAlert className="h-5 w-5 text-red-500" /> Anomalies Checklist
               </h3>
               <div className="space-y-3 pt-2 border-t border-neutral-100 dark:border-neutral-800">
-                {data.anomalies.map((anomaly, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 bg-red-500/5 rounded-xl border border-red-500/10">
-                    <span className="text-red-500 text-xs shrink-0 mt-0.5">⚠️</span>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-350 leading-relaxed font-semibold">
-                      {anomaly}
-                    </p>
-                  </div>
-                ))}
+                {data.anomalies.map((anomaly, idx) => {
+                  const isCritical = anomaly.includes('CRITICAL ANOMALY');
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all duration-300
+                        ${isCritical 
+                          ? 'bg-red-500/10 dark:bg-red-950/20 border-red-500 text-red-700 dark:text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.1)]' 
+                          : 'bg-red-500/5 border-red-500/10 text-neutral-600 dark:text-neutral-350'}`}
+                    >
+                      {isCritical ? (
+                        <ShieldAlert className="h-5 w-5 text-red-500 shrink-0 animate-pulse mt-0.5" />
+                      ) : (
+                        <span className="text-red-500 text-xs shrink-0 mt-0.5">⚠️</span>
+                      )}
+                      <div className="flex-1 space-y-1">
+                        <p className="text-xs leading-relaxed font-semibold">
+                          {anomaly}
+                        </p>
+                        {isCritical && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-500 text-white uppercase tracking-wider animate-pulse">
+                            Critical Alert
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
                 {data.anomalies.length === 0 && (
                   <div className="flex items-start gap-3 p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
                     <span className="text-emerald-500 text-xs shrink-0">✅</span>
@@ -205,6 +235,75 @@ export default function CarbonAnalysisPanel() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+
+      {/* Hidden Printable Report Container */}
+      {data && !isPending && (
+        <div className="hidden print:block print:w-full print:bg-white print:text-black print:p-8 space-y-6">
+          <div className="flex justify-between items-center border-b-2 border-emerald-600 pb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-neutral-900">GreenPulse AI</h1>
+              <p className="text-xs text-neutral-500 uppercase tracking-wide font-semibold">Environmental Compliance Report</p>
+            </div>
+            <div className="text-right text-xs text-neutral-400">
+              <p>Report Date: {new Date().toLocaleDateString()}</p>
+              <p>Status: Certified AI Analysis</p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h2 className="text-sm font-bold text-neutral-800 border-b border-neutral-200 pb-1">1. Executive Summary</h2>
+            <p className="text-xs text-neutral-600 leading-relaxed whitespace-pre-wrap">
+              {data.summary}
+            </p>
+            <div className="grid grid-cols-3 gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-100 mt-2">
+              <div>
+                <p className="text-[10px] text-neutral-450 font-bold uppercase">Total Emissions</p>
+                <p className="text-base font-extrabold text-neutral-900 mt-0.5">{data.kpiMetrics.totalEmissions} tons CO₂e</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-neutral-450 font-bold uppercase">Peak Usage Period</p>
+                <p className="text-xs font-bold text-neutral-900 mt-0.5">{data.kpiMetrics.peakUsageTime}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-neutral-450 font-bold uppercase">Efficiency Score</p>
+                <p className="text-base font-extrabold text-neutral-900 mt-0.5">{data.kpiMetrics.efficiencyScore} / 100</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h2 className="text-sm font-bold text-neutral-800 border-b border-neutral-200 pb-1">2. Logged Telemetry Data</h2>
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-neutral-100 text-[10px] font-bold uppercase tracking-wider text-neutral-550 border-b border-neutral-200">
+                  <th className="p-2.5">Time Label</th>
+                  <th className="p-2.5 text-right">Energy Consumption (kWh)</th>
+                  <th className="p-2.5 text-right">Estimated Emissions (tons CO₂e)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-150">
+                {data.chartData.map((row, idx) => (
+                  <tr key={idx}>
+                    <td className="p-2.5 font-medium text-neutral-700">{row.label}</td>
+                    <td className="p-2.5 text-right text-neutral-800 font-semibold">{row.consumption.toLocaleString()} kWh</td>
+                    <td className="p-2.5 text-right text-neutral-800 font-semibold">{row.emissions.toLocaleString()} t</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="space-y-3 pt-4 border-t-2 border-emerald-600">
+            <h2 className="text-sm font-bold text-neutral-800 border-b border-neutral-200 pb-1">3. AI Decarbonization Roadmap</h2>
+            <ul className="list-disc pl-4 text-xs text-neutral-600 space-y-1.5">
+              <li>Transition office lighting and heavy HVAC elements to smart local power grids.</li>
+              <li>Conduct an immediate mechanical audit targeting highlighted baseline anomaly spikes.</li>
+              <li>Electrify thermal energy loops and integrate automated solar PV offsets.</li>
+            </ul>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
