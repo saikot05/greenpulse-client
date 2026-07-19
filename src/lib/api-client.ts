@@ -1,15 +1,54 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
+// ─── JWT Token Cache ─────────────────────────────────────────────────────────
+let _cachedJwt: string | null = null;
+let _jwtExpiry = 0;
+
 /**
- * Reads the Better Auth session token directly from client cookies.
- * This is used to append to the Authorization header, ensuring authentication works
- * reliably across cross-origin port boundaries (e.g. port 3000 to port 5000).
+ * Retrieves a valid auth token for cross-origin API requests.
+ *
+ * 1. Tries reading the session cookie directly (fast path — works in dev
+ *    where the cookie is NOT HttpOnly).
+ * 2. Falls back to Better Auth's JWT token endpoint `/api/auth/token`
+ *    (works in production where cookies are HttpOnly + Secure).
+ *    This is a same-origin request, so the browser sends the HttpOnly cookie
+ *    automatically.
+ * 3. Caches the JWT for 4 minutes to avoid re-fetching on every request
+ *    (Better Auth JWTs default to 5 min expiry).
  */
-function getSessionToken(): string {
-  if (typeof document === 'undefined') return '';
-  const match = document.cookie.match(/(?:^|; )(?:__Secure-)?better-auth\.session_token=([^;]*)/);
-  return match ? decodeURIComponent(match[1]) : '';
+async function getSessionToken(): Promise<string> {
+  if (typeof window === 'undefined') return '';
+
+  // Fast path: try reading cookie directly (works in dev)
+  const match = document.cookie.match(
+    /(?:^|; )(?:__Secure-)?better-auth\.session_token=([^;]*)/
+  );
+  if (match) return decodeURIComponent(match[1]);
+
+  // Return cached JWT if still valid
+  if (_cachedJwt && Date.now() < _jwtExpiry) return _cachedJwt;
+
+  // Fetch JWT from Better Auth's token endpoint (same-origin, HttpOnly cookies are sent)
+  try {
+    const res = await fetch('/api/auth/token', {
+      method: 'POST',
+      credentials: 'include',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.token) {
+        _cachedJwt = data.token;
+        _jwtExpiry = Date.now() + 4 * 60 * 1000; // cache for 4 min
+        return data.token;
+      }
+    }
+  } catch {
+    // User is not authenticated — silently return empty
+  }
+
+  return '';
 }
+
 
 /**
  * Enterprise Fetch API Wrapper.
@@ -27,7 +66,7 @@ export const apiClient = {
       });
     }
 
-    const token = getSessionToken();
+    const token = await getSessionToken();
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
@@ -54,7 +93,7 @@ export const apiClient = {
   },
 
   async post<T>(path: string, body: unknown): Promise<T> {
-    const token = getSessionToken();
+    const token = await getSessionToken();
     const response = await fetch(`${BASE_URL}${path}`, {
       method: 'POST',
       headers: {
@@ -82,7 +121,7 @@ export const apiClient = {
   },
 
   async delete<T>(path: string): Promise<T> {
-    const token = getSessionToken();
+    const token = await getSessionToken();
     const response = await fetch(`${BASE_URL}${path}`, {
       method: 'DELETE',
       headers: {
@@ -108,7 +147,7 @@ export const apiClient = {
   },
 
   async postFormData<T>(path: string, formData: FormData): Promise<T> {
-    const token = getSessionToken();
+    const token = await getSessionToken();
     const response = await fetch(`${BASE_URL}${path}`, {
       method: 'POST',
       // Let the browser set the boundary headers automatically
