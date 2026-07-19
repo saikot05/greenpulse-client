@@ -1,4 +1,6 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
+import { getApiBaseUrl } from './urls';
+
+const BASE_URL = getApiBaseUrl();
 
 // ─── JWT Token Cache ─────────────────────────────────────────────────────────
 let _cachedJwt: string | null = null;

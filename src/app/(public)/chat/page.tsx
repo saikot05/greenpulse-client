@@ -8,6 +8,7 @@ import { Thunderbolt } from '@gravity-ui/icons';
 import Link from 'next/link';
 import { useChat, type UIMessage } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
+import { getApiBaseUrl } from '@/lib/urls';
 
 const SUGGESTED_PROMPTS = [
   'Analyze my facility emission trends',
@@ -41,7 +42,7 @@ export default function ChatPage() {
   const transport = React.useMemo(() => {
     if (!sessionId) return undefined;
     return new DefaultChatTransport({
-      api: `${process.env.NEXT_PUBLIC_API_URL}/ai/chat`,
+      api: `${getApiBaseUrl()}/ai/chat`,
       body: {
         sessionId,
       },

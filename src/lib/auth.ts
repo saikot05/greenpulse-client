@@ -9,6 +9,7 @@ import { betterAuth } from 'better-auth';
 import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { MongoClient } from 'mongodb';
 import { jwt } from 'better-auth/plugins';
+import { getAppBaseUrl } from './urls';
 
 // MongoDB client
 const client = new MongoClient(process.env.MONGODB_URI!);
@@ -25,7 +26,7 @@ export const auth = betterAuth({
 
   // Required: base URL must match the domain that runs /api/auth/*
   // Set BETTER_AUTH_URL in .env.local to avoid redirect_uri_mismatch with Google
-  baseURL: process.env.BETTER_AUTH_URL!,
+  baseURL: getAppBaseUrl(),
 
   // Email / Password
   // Docs: https://www.better-auth.com/docs/authentication/email-password
