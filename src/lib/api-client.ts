@@ -33,7 +33,7 @@ async function getSessionToken(): Promise<string> {
   // Fetch JWT from Better Auth's token endpoint (same-origin, HttpOnly cookies are sent)
   try {
     const res = await fetch('/api/auth/token', {
-      method: 'POST',
+      method: 'GET',
       credentials: 'include',
     });
     if (res.ok) {
